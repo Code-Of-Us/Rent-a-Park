@@ -1,9 +1,12 @@
 package com.codeofus.rent_a_park.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Person {
+public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -22,10 +25,12 @@ public class Person {
     String lastName;
     String registration;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Spot> rentedSpots;
+    List<Spot> rentedSpots = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Spot> parkingSpots;
+    List<Spot> parkingSpots = new ArrayList<>();
 
 }

@@ -22,6 +22,8 @@ dependencies {
     implementation("org.springframework:spring-jdbc:6.0.4")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.projectlombok:lombok")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")

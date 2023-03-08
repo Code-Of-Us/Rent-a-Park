@@ -6,6 +6,7 @@ import com.codeofus.rent_a_park.repositories.SpotRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class SpotService {
-
     private SpotRepository spotRepository;
     private PersonService personService;
 

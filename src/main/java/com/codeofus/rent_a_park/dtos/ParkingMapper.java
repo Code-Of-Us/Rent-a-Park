@@ -5,6 +5,8 @@ import com.codeofus.rent_a_park.models.Spot;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface ParkingMapper {
     @Mapping(source = "firstName", target = "firstName")
@@ -20,6 +22,8 @@ public interface ParkingMapper {
     @Mapping(source = "renter", target = "renter")
     @Mapping(source = "parker", target = "parker")
     SpotDto spotToDto(Spot spot);
+
+    List<SpotDto> spotsToDtoList(List<Spot> spots);
 
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")

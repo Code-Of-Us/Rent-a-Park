@@ -1,7 +1,7 @@
 package com.codeofus.rent_a_park.controllers;
 
-import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.PersonDto;
+import com.codeofus.rent_a_park.errors.BadRequestException;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.services.PersonService;
 import lombok.AccessLevel;
@@ -10,7 +10,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -19,21 +22,34 @@ import java.util.List;
 public class PersonController {
 
     private PersonService personService;
-    private ParkingMapper mapper;
 
-    @PostMapping("/add")
-    public ResponseEntity addPerson(@RequestBody PersonDto personDto) {
-        Person createdPerson = personService.addNewPerson(mapper.toPerson(personDto));
-        return ResponseEntity.ok(mapper.personToDto(createdPerson));
+    @PostMapping()
+    public ResponseEntity<Person> addPerson(@RequestBody PersonDto personDto) throws BadRequestException, URISyntaxException {
+        if (personDto.getId() != null) {
+            throw new BadRequestException("A new user cannot already have an ID", "users", "idexists");
+        }
+        Person newUser = personService.addNewPerson(personDto);
+        return ResponseEntity
+                .created(new URI("/api/v1/users/" + newUser.getId()))
+                .body(newUser);
     }
 
-    @GetMapping("/all")
+    @PutMapping
+    public ResponseEntity<PersonDto> updatePerson(@RequestBody PersonDto personDto) {
+        Optional<PersonDto> updatedUser = personService.updatePerson(personDto);
+        return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
     public List<Person> getAllPersons() {
         return personService.getAll();
     }
 
-    @DeleteMapping("/delete")
-    public void deletePerson(@RequestBody PersonDto personDto) {
-        personService.deletePerson(mapper.toPerson(personDto));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePerson(@PathVariable Integer id) {
+        personService.deletePerson(id);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }
