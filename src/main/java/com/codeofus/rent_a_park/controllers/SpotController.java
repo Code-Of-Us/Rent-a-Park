@@ -15,33 +15,33 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "parking-reservation")
+@RequestMapping(path = "parking")
 public class SpotController {
 
     SpotService spotService;
     ParkingMapper parkingMapper;
 
-    @PostMapping(path = "/addParking")
+    @PostMapping(path = "/add")
     private void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody PersonDto renter){
         spotService.rentASpot(parkingMapper.toSpot(spot), parkingMapper.toPerson(renter));
     }
 
-    @PostMapping
+    @PostMapping("/reserve")
     private void reserveParkingSpot(@RequestBody SpotDto spot, @RequestBody PersonDto parker) {
         spotService.reserveSpot(parkingMapper.toSpot(spot), parkingMapper.toPerson(parker));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     private void deleteParkingSpot(@RequestBody SpotDto spot){
         spotService.deleteSpot(parkingMapper.toSpot(spot));
     }
 
-    @DeleteMapping
+    @PutMapping("/cancel")
     private void cancelReservation(@RequestBody SpotDto spot, @RequestBody PersonDto parker){
         spotService.cancelReservation(parkingMapper.toSpot(spot), parkingMapper.toPerson(parker));
     }
 
-    @GetMapping(path = "/parking-spots")
+    @GetMapping(path = "/all")
     private List<SpotDto> getAllParkingSpots() {
         return spotService
                 .getAllSpots()

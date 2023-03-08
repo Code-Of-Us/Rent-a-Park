@@ -13,16 +13,18 @@ import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class PersonService {
 
     private PersonRepository personRepository;
 
     @Transactional
-    public void addNewPerson(Person person) {
+    public Person addNewPerson(Person person) {
         if (!(personRepository.findAll()).contains(person)) {
-            personRepository.save(person);
+            return personRepository.save(person);
         }
+        return person;
     }
 
     @Transactional
@@ -30,6 +32,10 @@ public class PersonService {
         if ((personRepository.findAll()).contains(person)) {
             personRepository.delete(person);
         }
+    }
+
+    public List<Person> getAll(){
+       return personRepository.findAll();
     }
 
     @Transactional
