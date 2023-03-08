@@ -1,7 +1,7 @@
 package com.codeofus.rent_a_park.services;
 
+import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
-import com.codeofus.rent_a_park.models.Driver;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 public class SpotService {
 
     private SpotRepository spotRepository;
-    private UserService userService;
+    private PersonService personService;
 
     public List<Spot> getAllSpots() {
         return spotRepository.findAll();
@@ -31,24 +31,24 @@ public class SpotService {
     }
 
     @Transactional
-    public void reserveSpot(Spot spot, Driver parker) {
-        spot.setParker(parker); //!!!!!
+    public void reserveSpot(Spot spot, Person parker) {
+        spot.setParker(parker);
         spotRepository.save(spot);
-        userService.reserveParkingSpot(spot, parker);
+        personService.reserveParkingSpot(spot, parker);
     }
 
     @Transactional
-    public void rentASpot(Spot spot, Driver renter) {
-        spot.setRenter(renter); //!!!!!
+    public void rentASpot(Spot spot, Person renter) {
+        spot.setRenter(renter);
         spotRepository.save(spot);
-        userService.addParkingSpot(spot, renter);
+        personService.addParkingSpot(spot, renter);
     }
 
     @Transactional
-    public void cancelReservation(Spot spot, Driver parker) {
+    public void cancelReservation(Spot spot, Person parker) {
         if (spotRepository.findAll().contains(spot)) {
-            spot.setParker(null); //!!!!!
-            userService.cancelReservation(spot, parker);
+            spot.setParker(null);
+            personService.cancelReservation(spot, parker);
         }
     }
 }

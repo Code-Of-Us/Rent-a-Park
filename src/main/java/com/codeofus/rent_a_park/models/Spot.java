@@ -24,10 +24,10 @@ public class Spot {
 
     @ManyToOne
     @JoinColumn(name="renter_id", nullable = false)
-    Driver renter;
+    Person renter;
 
     @ManyToOne
     @JoinColumn(name="parker_id")
-    Driver parker;
+    Person parker;
 
 }

@@ -1,6 +1,6 @@
 package com.codeofus.rent_a_park.dtos;
 
-import com.codeofus.rent_a_park.models.Driver;
+import com.codeofus.rent_a_park.models.Person;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,6 +16,6 @@ public class SpotDto {
     String address;
     LocalDateTime availability;
     Integer capacity;
-    Driver renter;
-    Driver parker;
+    Person renter;
+    Person parker;
 }

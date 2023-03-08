@@ -2,7 +2,7 @@ package com.codeofus.rent_a_park.controllers;
 
 import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.SpotDto;
-import com.codeofus.rent_a_park.dtos.DriverDto;
+import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.services.SpotService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +22,13 @@ public class SpotController {
     ParkingMapper parkingMapper;
 
     @PostMapping(path = "/addParking")
-    private void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody DriverDto renter){
-        spotService.rentASpot(parkingMapper.toSpot(spot), parkingMapper.toDriver(renter));
+    private void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody PersonDto renter){
+        spotService.rentASpot(parkingMapper.toSpot(spot), parkingMapper.toPerson(renter));
     }
 
     @PostMapping
-    private void reserveParkingSpot(@RequestBody SpotDto spot, @RequestBody DriverDto parker) {
-        spotService.reserveSpot(parkingMapper.toSpot(spot), parkingMapper.toDriver(parker));
+    private void reserveParkingSpot(@RequestBody SpotDto spot, @RequestBody PersonDto parker) {
+        spotService.reserveSpot(parkingMapper.toSpot(spot), parkingMapper.toPerson(parker));
     }
 
     @DeleteMapping
@@ -37,8 +37,8 @@ public class SpotController {
     }
 
     @DeleteMapping
-    private void cancelReservation(@RequestBody SpotDto spot, @RequestBody DriverDto parker){
-        spotService.cancelReservation(parkingMapper.toSpot(spot), parkingMapper.toDriver(parker));
+    private void cancelReservation(@RequestBody SpotDto spot, @RequestBody PersonDto parker){
+        spotService.cancelReservation(parkingMapper.toSpot(spot), parkingMapper.toPerson(parker));
     }
 
     @GetMapping(path = "/parking-spots")
