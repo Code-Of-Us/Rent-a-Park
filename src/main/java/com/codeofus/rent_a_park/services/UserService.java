@@ -1,7 +1,7 @@
 package com.codeofus.rent_a_park.services;
 
 import com.codeofus.rent_a_park.models.Spot;
-import com.codeofus.rent_a_park.models.User;
+import com.codeofus.rent_a_park.models.Driver;
 import com.codeofus.rent_a_park.repositories.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +19,21 @@ public class UserService {
     private UserRepository userRepository;
 
     @Transactional
-    public void addNewUser(User user) {
-        if (!(userRepository.findAll()).contains(user)) {
-            userRepository.save(user);
+    public void addNewUser(Driver driver) {
+        if (!(userRepository.findAll()).contains(driver)) {
+            userRepository.save(driver);
         }
     }
 
     @Transactional
-    public void deleteUser(User user) {
-        if ((userRepository.findAll()).contains(user)) {
-            userRepository.delete(user);
+    public void deleteUser(Driver driver) {
+        if ((userRepository.findAll()).contains(driver)) {
+            userRepository.delete(driver);
         }
     }
 
     @Transactional
-    public void reserveParkingSpot(Spot spot, User parker) {
+    public void reserveParkingSpot(Spot spot, Driver parker) {
         List<Spot> parkingSpots = parker.getParkingSpots(); //!!!!!
         parkingSpots.add(spot);
         if (userRepository.findAll().contains(parker)) {
@@ -44,7 +44,7 @@ public class UserService {
     }
 
     @Transactional
-    public void addParkingSpot(Spot spot, User renter) {
+    public void addParkingSpot(Spot spot, Driver renter) {
         List<Spot> rentedSpots = renter.getRentedSpots(); //!!!!!
         rentedSpots.add(spot);
         if (userRepository.findAll().contains(renter)) {
@@ -55,7 +55,7 @@ public class UserService {
     }
 
     @Transactional
-    public void cancelReservation(Spot spot, User parker) {
+    public void cancelReservation(Spot spot, Driver parker) {
         List<Spot> parkingSpots = parker.getParkingSpots(); //!!!!!
         parkingSpots.remove(spot);
         userRepository.delete(parker);

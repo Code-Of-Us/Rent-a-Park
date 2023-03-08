@@ -1,7 +1,7 @@
 package com.codeofus.rent_a_park.services;
 
 import com.codeofus.rent_a_park.models.Spot;
-import com.codeofus.rent_a_park.models.User;
+import com.codeofus.rent_a_park.models.Driver;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,21 +31,21 @@ public class SpotService {
     }
 
     @Transactional
-    public void reserveSpot(Spot spot, User parker) {
+    public void reserveSpot(Spot spot, Driver parker) {
         spot.setParker(parker); //!!!!!
         spotRepository.save(spot);
         userService.reserveParkingSpot(spot, parker);
     }
 
     @Transactional
-    public void rentASpot(Spot spot, User renter) {
+    public void rentASpot(Spot spot, Driver renter) {
         spot.setRenter(renter); //!!!!!
         spotRepository.save(spot);
         userService.addParkingSpot(spot, renter);
     }
 
     @Transactional
-    public void cancelReservation(Spot spot, User parker) {
+    public void cancelReservation(Spot spot, Driver parker) {
         if (spotRepository.findAll().contains(spot)) {
             spot.setParker(null); //!!!!!
             userService.cancelReservation(spot, parker);
