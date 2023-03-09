@@ -28,8 +28,8 @@ public class PersonService {
     private ParkingMapper mapper;
 
     @Cacheable(value = "persons")
-    public List<Person> getAll(){
-        return personRepository.findAll();
+    public List<PersonDto> getAll(){
+        return personRepository.findAll().stream().map(mapper::personToDto).toList();
     }
 
     @Transactional
@@ -49,7 +49,6 @@ public class PersonService {
                             user.setFirstName(person.getFirstName());
                             user.setLastName(person.getLastName());
                             user.setRegistration(person.getRegistration());
-
                             user = personRepository.save(user);
                             return user;
                         }

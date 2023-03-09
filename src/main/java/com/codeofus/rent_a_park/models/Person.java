@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Person implements Serializable {
+public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -25,12 +25,9 @@ public class Person implements Serializable {
     String lastName;
     String registration;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Spot> rentedSpots = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "parker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Spot> parkingSpots = new ArrayList<>();
-
 }
