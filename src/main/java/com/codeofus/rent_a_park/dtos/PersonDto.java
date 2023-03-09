@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PersonDto implements Serializable {
+
     Integer id;
     @NotNull
     String firstName;
@@ -25,4 +26,5 @@ public class PersonDto implements Serializable {
     List<SpotDto> rentedSpots;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<SpotDto> parkingSpots;
+
 }

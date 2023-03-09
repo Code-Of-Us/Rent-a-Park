@@ -28,7 +28,7 @@ public class PersonService {
     private ParkingMapper mapper;
 
     @Cacheable(value = "persons")
-    public List<PersonDto> getAll(){
+    public List<PersonDto> getAll() {
         return personRepository.findAll().stream().map(mapper::personToDto).toList();
     }
 
@@ -38,7 +38,7 @@ public class PersonService {
     }
 
     @Transactional
-    @CachePut(cacheNames="person", key="#person.id")
+    @CachePut(cacheNames = "person", key = "#person.id")
     public Optional<PersonDto> updatePerson(PersonDto person) {
         return Optional
                 .of(personRepository.findById(person.getId()))

@@ -19,4 +19,5 @@ public class BadRequestException extends Throwable {
     public String getErrorKey() {
         return errorKey;
     }
+
 }

@@ -8,7 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Integer> {
-    Person getPersonByRegistration(String registration);
 
+    Person getPersonByRegistration(String registration);
     Optional<Person> findOneById(Integer id);
+
 }

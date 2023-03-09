@@ -6,10 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SpotRepository extends JpaRepository<Spot, Integer> {
 
     List<Spot> getSpotsByRenter(Person person);
+    Spot getSpotById(Integer id);
+    Optional<Spot> findOneById(Integer id);
 
 }
