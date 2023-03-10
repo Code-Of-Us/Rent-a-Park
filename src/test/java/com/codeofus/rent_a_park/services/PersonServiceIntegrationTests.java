@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class PersonServiceIntegrationTests extends IntegrationTest {
@@ -20,7 +21,8 @@ public class PersonServiceIntegrationTests extends IntegrationTest {
     @Test
     public void verifyCacheIsReturnedAfterFirstCall() {
         personService.getAll();
-        personService.getAll();
         verify(personRepository, times(1)).findAll();
+        personService.getAll();
+        verifyNoMoreInteractions(personRepository);
     }
 }
