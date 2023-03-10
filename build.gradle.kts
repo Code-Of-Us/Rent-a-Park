@@ -36,10 +36,11 @@ tasks.withType<Test> {
 }
 
 tasks.jacocoTestReport {
-    dependsOn(tasks.test)
     reports {
-        html.isEnabled = true
-        xml.isEnabled = false
+        xml.isEnabled = true
+        xml.destination  = File("$buildDir/reports/jacoco/report.xml")
         csv.isEnabled = false
+        html.isEnabled = false
     }
+    executionData(File("build/jacoco/test.exec"))
 }
