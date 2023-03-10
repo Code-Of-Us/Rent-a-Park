@@ -9,7 +9,6 @@ plugins {
 
 jacoco {
     toolVersion = "0.8.8"
-    reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
 }
 
 group = "com.example"
