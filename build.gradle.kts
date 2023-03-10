@@ -26,6 +26,10 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:testcontainers:1.17.6")
+    testImplementation("org.testcontainers:postgresql:1.17.6")
+    testImplementation("org.testcontainers:junit-jupiter:1.17.6")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+
 
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
