@@ -42,9 +42,7 @@ tasks.withType<Test> {
 tasks.jacocoTestReport {
     reports {
         xml.isEnabled = true
-        xml.destination  = File("$buildDir/reports/jacoco/report.xml")
         csv.isEnabled = false
         html.isEnabled = false
     }
-    executionData(File("build/jacoco/test.exec"))
 }
