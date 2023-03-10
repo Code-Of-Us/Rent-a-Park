@@ -16,8 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class SpotService {
-    private SpotRepository spotRepository;
-    private PersonService personService;
+    SpotRepository spotRepository;
+    PersonService personService;
 
     public List<Spot> getAllSpots() {
         return spotRepository.findAll();
