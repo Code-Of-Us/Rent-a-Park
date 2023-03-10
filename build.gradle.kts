@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "2.7.9"
     id("io.spring.dependency-management") version "1.1.0"
+    id("jacoco")
 }
 
 group = "com.example"
@@ -30,4 +31,8 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
 }
