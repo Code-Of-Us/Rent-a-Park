@@ -23,11 +23,11 @@ public class Spot {
     Integer capacity;
 
     @ManyToOne
-    @JoinColumn(name="renter_id", nullable = false)
+    @JoinColumn(name = "renter_id", nullable = false)
     Person renter;
 
     @ManyToOne
-    @JoinColumn(name="parker_id")
+    @JoinColumn(name = "parker_id")
     Person parker;
 
 }

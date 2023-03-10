@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class SpotService {
-
     private SpotRepository spotRepository;
     private PersonService personService;
 
@@ -25,14 +24,17 @@ public class SpotService {
     }
 
     @Transactional
-    public void deleteSpot(Spot spot) {
-        if ((spotRepository.findAll()).contains(spot)) {
-            spotRepository.delete(spot);
-        }
+    public void deleteSpot(Integer id) {
+        spotRepository
+                .findOneById(id)
+                .ifPresent(
+                        spotRepository::delete
+                );
     }
 
     @Transactional
-    public void reserveSpot(Spot spot, Person parker) {
+    public void reserveSpot(int id, Person parker) {
+        Spot spot = spotRepository.getSpotById(id);
         spot.setParker(parker);
         spotRepository.save(spot);
         personService.reserveParkingSpot(spot, parker);
@@ -46,10 +48,11 @@ public class SpotService {
     }
 
     @Transactional
-    public void cancelReservation(Spot spot, Person parker) {
-        if (spotRepository.findAll().contains(spot)) {
-            spot.setParker(null);
-            personService.cancelReservation(spot, parker);
-        }
+    public void cancelReservation(int id, Person parker) {
+        Spot spot = spotRepository.getSpotById(id);
+        spotRepository.delete(spot);
+        spot.setParker(null);
+        spotRepository.save(spot);
+        personService.cancelReservation(spot, parker);
     }
 }

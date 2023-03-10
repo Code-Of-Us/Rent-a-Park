@@ -1,5 +1,7 @@
 package com.codeofus.rent_a_park.services;
 
+import com.codeofus.rent_a_park.dtos.ParkingMapper;
+import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -19,23 +22,42 @@ public class PersonService {
 
     private PersonRepository personRepository;
 
-    @Transactional
-    public Person addNewPerson(Person person) {
-        if (!(personRepository.findAll()).contains(person)) {
-            return personRepository.save(person);
-        }
-        return person;
+    private ParkingMapper mapper;
+
+    public List<PersonDto> getAll() {
+        return personRepository.findAll().stream().map(mapper::personToDto).toList();
     }
 
     @Transactional
-    public void deletePerson(Person person) {
-        if ((personRepository.findAll()).contains(person)) {
-            personRepository.delete(person);
-        }
+    public Person addNewPerson(PersonDto personDto) {
+        return personRepository.save(mapper.toPerson(personDto));
     }
 
-    public List<Person> getAll(){
-       return personRepository.findAll();
+    @Transactional
+    public Optional<PersonDto> updatePerson(PersonDto person) {
+        return Optional
+                .of(personRepository.findById(person.getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(
+                        user -> {
+                            user.setFirstName(person.getFirstName());
+                            user.setLastName(person.getLastName());
+                            user.setRegistration(person.getRegistration());
+                            user = personRepository.save(user);
+                            return user;
+                        }
+                )
+                .map(mapper::personToDto);
+    }
+
+    @Transactional
+    public void deletePerson(Integer personId) {
+        personRepository
+                .findOneById(personId)
+                .ifPresent(
+                        personRepository::delete
+                );
     }
 
     @Transactional

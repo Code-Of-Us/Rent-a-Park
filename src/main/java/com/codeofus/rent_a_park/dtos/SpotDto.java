@@ -12,10 +12,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SpotDto {
+
     int id;
     String address;
     LocalDateTime availability;
     Integer capacity;
     Person renter;
     Person parker;
+
 }

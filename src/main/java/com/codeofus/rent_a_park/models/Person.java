@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,9 +24,8 @@ public class Person {
     String registration;
 
     @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Spot> rentedSpots;
+    List<Spot> rentedSpots = new ArrayList<>();
 
     @OneToMany(mappedBy = "parker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Spot> parkingSpots;
-
+    List<Spot> parkingSpots = new ArrayList<>();
 }

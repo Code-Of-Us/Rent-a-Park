@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -21,19 +22,29 @@ public class PersonController {
     private PersonService personService;
     private ParkingMapper mapper;
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity addPerson(@RequestBody PersonDto personDto) {
-        Person createdPerson = personService.addNewPerson(mapper.toPerson(personDto));
+        Person createdPerson = personService.addNewPerson(personDto);
         return ResponseEntity.ok(mapper.personToDto(createdPerson));
     }
 
-    @GetMapping("/all")
-    public List<Person> getAllPersons() {
+    @PutMapping
+    public ResponseEntity<PersonDto> updatePerson(@RequestBody PersonDto personDto) {
+        Optional<PersonDto> updatedUser = personService.updatePerson(personDto);
+        return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public List<PersonDto> getAllPersons() {
         return personService.getAll();
     }
 
-    @DeleteMapping("/delete")
-    public void deletePerson(@RequestBody PersonDto personDto) {
-        personService.deletePerson(mapper.toPerson(personDto));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePerson(@PathVariable Integer id) {
+        personService.deletePerson(id);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
+
 }
