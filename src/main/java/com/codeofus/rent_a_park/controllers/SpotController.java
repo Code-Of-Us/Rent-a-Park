@@ -1,15 +1,12 @@
 package com.codeofus.rent_a_park.controllers;
 
 import com.codeofus.rent_a_park.dtos.ParkingMapper;
-import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.dtos.SpotDto;
 import com.codeofus.rent_a_park.services.SpotService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,13 +22,13 @@ public class SpotController {
     ParkingMapper parkingMapper;
 
     @PostMapping
-    public void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody PersonDto renter) {
-        spotService.rentASpot(parkingMapper.toSpot(spot), parkingMapper.toPerson(renter));
+    public void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody int renterId) {
+        spotService.rentASpot(parkingMapper.toSpot(spot), renterId);
     }
 
     @PutMapping("/{id}/reserve")
-    public void reserveParkingSpot(@PathVariable int id, @RequestBody PersonDto parker) {
-        spotService.reserveSpot(id, parkingMapper.toPerson(parker));
+    public void reserveParkingSpot(@PathVariable int id, @RequestBody int parkerId) {
+        spotService.reserveSpot(id, parkerId);
     }
 
     @DeleteMapping("/{id}")
@@ -40,13 +37,12 @@ public class SpotController {
     }
 
     @PutMapping("/{id}/cancel")
-    public void cancelReservation(@PathVariable int id, @RequestBody PersonDto parker) {
-        spotService.cancelReservation(id, parkingMapper.toPerson(parker));
+    public void cancelReservation(@PathVariable int id, @RequestBody int parkerId) {
+        spotService.cancelReservation(id, parkerId);
     }
 
     @GetMapping
-    public List<SpotDto> getAllParkingSpots(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+    public List<SpotDto> getAllParkingSpots(Pageable pageable) {
         return spotService.getAllSpots(pageable).stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
     }
 
