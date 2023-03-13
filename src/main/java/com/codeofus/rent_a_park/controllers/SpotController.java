@@ -42,8 +42,8 @@ public class SpotController {
     }
 
     @GetMapping
-    private List<SpotDto> getAllParkingSpots() {
-        return spotService.getAllSpots().stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
+    private List<SpotDto> getAllParkingSpots(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy) {
+        return spotService.getAllSpots(pageNo, pageSize, sortBy).stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
     }
 
 }

@@ -22,9 +22,9 @@ public class PersonDto implements Serializable {
     String lastName;
     @NotNull
     String registration;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<SpotDto> rentedSpots;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<SpotDto> parkingSpots;
 
 }

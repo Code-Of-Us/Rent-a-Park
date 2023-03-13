@@ -34,8 +34,8 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<PersonDto> getAllPersons() {
-        return personService.getAll().stream().map(mapper::personToDto).collect(Collectors.toList());
+    public List<PersonDto> getAllPersons(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy) {
+        return personService.getAllPersons(pageNo, pageSize, sortBy).stream().map(mapper::personToDto).collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")

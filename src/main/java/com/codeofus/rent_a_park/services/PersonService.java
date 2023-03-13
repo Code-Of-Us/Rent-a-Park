@@ -6,9 +6,14 @@ import com.codeofus.rent_a_park.repositories.PersonRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,14 +24,21 @@ import java.util.Optional;
 public class PersonService {
 
     PersonRepository personRepository;
-    
-    public List<Person> getAll() {
-        return personRepository.findAll();
-    }
 
     @Transactional
     public Person addNewPerson(Person person) {
         return personRepository.save(person);
+    }
+
+    public List<Person> getAllPersons(Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Person> pagedResult = personRepository.findAll(pageable);
+
+        if (pagedResult.hasContent()) {
+            return pagedResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @Transactional
@@ -66,9 +78,6 @@ public class PersonService {
     public void addParkingSpot(Spot spot, Person renter) {
         List<Spot> rentedSpots = renter.getRentedSpots();
         rentedSpots.add(spot);
-        if (personRepository.findById(renter.getId()).isPresent()) {
-            personRepository.delete(renter);
-        }
         renter.setRentedSpots(rentedSpots);
         personRepository.save(renter);
     }
@@ -77,7 +86,6 @@ public class PersonService {
     public void cancelReservation(Spot spot, Person parker) {
         List<Spot> parkingSpots = parker.getParkingSpots();
         parkingSpots.remove(spot);
-        personRepository.delete(parker);
         parker.setParkingSpots(parkingSpots);
         personRepository.save(parker);
     }
