@@ -1,6 +1,5 @@
 package com.codeofus.rent_a_park.dtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sun.istack.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,9 +21,7 @@ public class PersonDto implements Serializable {
     String lastName;
     @NotNull
     String registration;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<SpotDto> rentedSpots;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<SpotDto> parkingSpots;
 
 }

@@ -7,13 +7,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,14 +27,12 @@ public class PersonService {
         return personRepository.save(person);
     }
 
-    public List<Person> getAllPersons(Integer pageNo, Integer pageSize, String sortBy) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+    public List<Person> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
-
         if (pagedResult.hasContent()) {
             return pagedResult.getContent();
         } else {
-            return new ArrayList<>();
+            return List.of();
         }
     }
 
