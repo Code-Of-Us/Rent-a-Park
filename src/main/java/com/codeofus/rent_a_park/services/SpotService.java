@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class SpotService {
+
     SpotRepository spotRepository;
     PersonService personService;
 
