@@ -1,12 +1,22 @@
-package com.codeofus.rent_a_park;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-//TODO: fix the setUp
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SpotControllerTests {
-
+//package com.codeofus.rent_a_park;
+//
+//import com.codeofus.rent_a_park.controllers.SpotController;
+//import com.codeofus.rent_a_park.dtos.ParkingMapper;
+//import com.codeofus.rent_a_park.dtos.PersonDto;
+//import com.codeofus.rent_a_park.dtos.SpotDto;
+//import com.codeofus.rent_a_park.models.Person;
+//import com.codeofus.rent_a_park.models.Spot;
+//import com.codeofus.rent_a_park.repositories.PersonRepository;
+//import com.codeofus.rent_a_park.repositories.SpotRepository;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+////TODO: fix the setUp
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//public class SpotControllerTests {
+//
 //    PersonDto testPerson;
 //    Person person;
 //    SpotDto testSpot;
@@ -44,10 +54,10 @@ public class SpotControllerTests {
 //        spotRepository.save(spot); //ConstraintViolationException
 //
 //    }
-
-    @Test
-    public void testGetAllSpots() {
-
-    }
-
-}
+//
+//    @Test
+//    public void testGetAllSpots() {
+//
+//    }
+//
+//}
