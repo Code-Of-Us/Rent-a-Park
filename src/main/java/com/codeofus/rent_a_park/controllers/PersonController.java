@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -34,7 +35,7 @@ public class PersonController {
 
     @GetMapping
     public List<PersonDto> getAllPersons() {
-        return personService.getAll();
+        return personService.getAll().stream().map(mapper::personToDto).collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")

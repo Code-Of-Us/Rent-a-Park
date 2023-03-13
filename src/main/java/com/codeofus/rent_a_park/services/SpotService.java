@@ -26,7 +26,7 @@ public class SpotService {
     @Transactional
     public void deleteSpot(Integer id) {
         spotRepository
-                .findOneById(id)
+                .findById(id)
                 .ifPresent(
                         spotRepository::delete
                 );

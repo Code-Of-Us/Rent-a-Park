@@ -46,7 +46,7 @@ public class SpotControllerTests {
         testSpot = SpotDto.builder()
                 .address("Zvonimirova 16")
                 .capacity(1)
-                .renter(mapper.toPerson(testPerson))
+                .renter(testPerson)
                 .build();
 
         spot = mapper.toSpot(testSpot);

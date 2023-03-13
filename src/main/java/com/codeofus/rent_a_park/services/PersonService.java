@@ -1,7 +1,5 @@
 package com.codeofus.rent_a_park.services;
 
-import com.codeofus.rent_a_park.dtos.ParkingMapper;
-import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
@@ -21,11 +19,9 @@ import java.util.Optional;
 public class PersonService {
 
     PersonRepository personRepository;
-
-    ParkingMapper mapper;
-
-    public List<PersonDto> getAll() {
-        return personRepository.findAll().stream().map(mapper::personToDto).toList();
+    
+    public List<Person> getAll() {
+        return personRepository.findAll();
     }
 
     @Transactional
