@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "parking")
+@RequestMapping(path = "/api/v1/parking")
 public class SpotController {
 
     SpotService spotService;
     ParkingMapper parkingMapper;
 
-    @PostMapping()
+    @PostMapping
     private void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody PersonDto renter) {
         spotService.rentASpot(parkingMapper.toSpot(spot), parkingMapper.toPerson(renter));
     }
@@ -43,11 +43,7 @@ public class SpotController {
 
     @GetMapping
     private List<SpotDto> getAllParkingSpots() {
-        return spotService
-                .getAllSpots()
-                .stream()
-                .map(parkingMapper::spotToDto)
-                .collect(Collectors.toList());
+        return spotService.getAllSpots().stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
     }
 
 }

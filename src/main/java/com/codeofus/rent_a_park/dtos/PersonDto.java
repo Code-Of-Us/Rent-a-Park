@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PersonDto implements Serializable {
+public class PersonDto {
 
     Integer id;
     @NotNull

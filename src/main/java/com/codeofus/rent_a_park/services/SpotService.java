@@ -10,14 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class SpotService {
-    private SpotRepository spotRepository;
-    private PersonService personService;
+
+    SpotRepository spotRepository;
+
+    PersonService personService;
 
     public List<Spot> getAllSpots() {
         return spotRepository.findAll();
@@ -26,7 +29,7 @@ public class SpotService {
     @Transactional
     public void deleteSpot(Integer id) {
         spotRepository
-                .findOneById(id)
+                .findById(id)
                 .ifPresent(
                         spotRepository::delete
                 );
@@ -34,10 +37,15 @@ public class SpotService {
 
     @Transactional
     public void reserveSpot(int id, Person parker) {
-        Spot spot = spotRepository.getSpotById(id);
-        spot.setParker(parker);
-        spotRepository.save(spot);
-        personService.reserveParkingSpot(spot, parker);
+        spotRepository
+                .findById(id)
+                .ifPresent(
+                    spot -> {
+                        spot.setParker(parker);
+                        spotRepository.save(spot);
+                        personService.reserveParkingSpot(spot, parker);
+                    }
+                );
     }
 
     @Transactional
@@ -49,10 +57,14 @@ public class SpotService {
 
     @Transactional
     public void cancelReservation(int id, Person parker) {
-        Spot spot = spotRepository.getSpotById(id);
-        spotRepository.delete(spot);
-        spot.setParker(null);
-        spotRepository.save(spot);
-        personService.cancelReservation(spot, parker);
+        spotRepository
+                .findById(id)
+                .ifPresent(
+                        spot -> {
+                            spot.setParker(null);
+                            spotRepository.save(spot);
+                            personService.cancelReservation(spot, parker);
+                        }
+                );
     }
 }

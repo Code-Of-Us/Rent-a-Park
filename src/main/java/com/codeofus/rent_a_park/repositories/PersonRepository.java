@@ -12,4 +12,6 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     Person getPersonByRegistration(String registration);
     Optional<Person> findOneById(Integer id);
 
+    Person getPersonById(Integer id);
+
 }

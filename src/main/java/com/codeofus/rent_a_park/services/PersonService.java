@@ -1,7 +1,5 @@
 package com.codeofus.rent_a_park.services;
 
-import com.codeofus.rent_a_park.dtos.ParkingMapper;
-import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
@@ -23,23 +21,21 @@ import java.util.Optional;
 @Service
 public class PersonService {
 
-    private PersonRepository personRepository;
-
-    private ParkingMapper mapper;
+    PersonRepository personRepository;
 
     @Cacheable(value = "persons")
-    public List<PersonDto> getAll() {
-        return personRepository.findAll().stream().map(mapper::personToDto).toList();
+    public List<Person> getAll() {
+        return personRepository.findAll();
     }
 
     @Transactional
-    public Person addNewPerson(PersonDto personDto) {
-        return personRepository.save(mapper.toPerson(personDto));
+    public Person addNewPerson(Person person) {
+        return personRepository.save(person);
     }
 
     @Transactional
     @CachePut(cacheNames = "person", key = "#person.id")
-    public Optional<PersonDto> updatePerson(PersonDto person) {
+    public Optional<Person> updatePerson(Person person) {
         return Optional
                 .of(personRepository.findById(person.getId()))
                 .filter(Optional::isPresent)
@@ -52,8 +48,7 @@ public class PersonService {
                             user = personRepository.save(user);
                             return user;
                         }
-                )
-                .map(mapper::personToDto);
+                );
     }
 
     @Transactional
@@ -70,7 +65,7 @@ public class PersonService {
     public void reserveParkingSpot(Spot spot, Person parker) {
         List<Spot> parkingSpots = parker.getParkingSpots();
         parkingSpots.add(spot);
-        if (personRepository.findAll().contains(parker)) {
+        if (personRepository.findById(parker.getId()).isPresent()) {
             personRepository.delete(parker);
         }
         parker.setParkingSpots(parkingSpots);
@@ -81,7 +76,7 @@ public class PersonService {
     public void addParkingSpot(Spot spot, Person renter) {
         List<Spot> rentedSpots = renter.getRentedSpots();
         rentedSpots.add(spot);
-        if (personRepository.findAll().contains(renter)) {
+        if (personRepository.findById(renter.getId()).isPresent()) {
             personRepository.delete(renter);
         }
         renter.setRentedSpots(rentedSpots);
