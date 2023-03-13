@@ -15,13 +15,6 @@ group = "com.example"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
-}
-tasks.jacocoTestReport {
-    dependsOn(tasks.test) // tests are required to run before generating the report
-}
-
 repositories {
     mavenCentral()
 }
@@ -48,8 +41,20 @@ tasks.withType<Test> {
 
 tasks.jacocoTestReport {
     reports {
-        xml.required.set(true)
-        csv.required.set(false)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+        xml.isEnabled = true
+        csv.isEnabled = true
+        html.isEnabled = true
+    }
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+    useJUnitPlatform {
+        includeEngines("junit-jupiter", "spek2")
+    }
+
+    testLogging {
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        events("passed", "failed", "skipped")
     }
 }
