@@ -39,22 +39,14 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.jacocoTestReport {
-    reports {
-        xml.isEnabled = true
-        csv.isEnabled = true
-        html.isEnabled = true
-    }
-}
-
 tasks.test {
-    finalizedBy(tasks.jacocoTestReport)
-    useJUnitPlatform {
-        includeEngines("junit-jupiter", "spek2")
-    }
-
-    testLogging {
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        events("passed", "failed", "skipped")
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required.set(true)
+        csv.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
 }
