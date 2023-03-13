@@ -38,13 +38,8 @@ public class PersonService {
 
     @Transactional
     public Optional<Person> updatePerson(Person person) {
-        return personRepository.findById(person.getId())
-                .flatMap(existingPerson -> {
-                    existingPerson.setFirstName(person.getFirstName());
-                    existingPerson.setLastName(person.getLastName());
-                    existingPerson.setRegistration(person.getRegistration());
-                    return Optional.of(existingPerson);
-                });
+        Optional<Person> personToUpdate = personRepository.findById(person.getId());
+        return personToUpdate.map(p -> p.UpdatePerson(person));
     }
 
     @Transactional
