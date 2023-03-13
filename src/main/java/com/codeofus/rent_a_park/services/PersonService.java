@@ -6,6 +6,8 @@ import com.codeofus.rent_a_park.repositories.PersonRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,42 +25,37 @@ public class PersonService {
 
     PersonRepository personRepository;
 
-    @Cacheable(value = "persons")
-    public List<Person> getAll() {
-        return personRepository.findAll();
-    }
-
     @Transactional
     public Person addNewPerson(Person person) {
         return personRepository.save(person);
     }
 
+    @Cacheable(value = "persons", key = "#pageable")
+    public List<Person> getAllPersons(Pageable pageable) {
+        Page<Person> pagedResult = personRepository.findAll(pageable);
+        if (pagedResult.hasContent()) {
+            return pagedResult.getContent();
+        } else {
+            return List.of();
+        }
+    }
+
     @Transactional
     @CachePut(cacheNames = "person", key = "#person.id")
     public Optional<Person> updatePerson(Person person) {
-        return Optional
-                .of(personRepository.findById(person.getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(
-                        user -> {
-                            user.setFirstName(person.getFirstName());
-                            user.setLastName(person.getLastName());
-                            user.setRegistration(person.getRegistration());
-                            user = personRepository.save(user);
-                            return user;
-                        }
-                );
+        return personRepository.findById(person.getId())
+                .flatMap(existingPerson -> {
+                    existingPerson.setFirstName(person.getFirstName());
+                    existingPerson.setLastName(person.getLastName());
+                    existingPerson.setRegistration(person.getRegistration());
+                    return Optional.of(existingPerson);
+                });
     }
 
     @Transactional
     @CacheEvict(value = "student", key = "#personId")
     public void deletePerson(Integer personId) {
-        personRepository
-                .findOneById(personId)
-                .ifPresent(
-                        personRepository::delete
-                );
+        personRepository.deleteById(personId);
     }
 
     @Transactional
@@ -76,9 +73,6 @@ public class PersonService {
     public void addParkingSpot(Spot spot, Person renter) {
         List<Spot> rentedSpots = renter.getRentedSpots();
         rentedSpots.add(spot);
-        if (personRepository.findById(renter.getId()).isPresent()) {
-            personRepository.delete(renter);
-        }
         renter.setRentedSpots(rentedSpots);
         personRepository.save(renter);
     }
@@ -87,7 +81,6 @@ public class PersonService {
     public void cancelReservation(Spot spot, Person parker) {
         List<Spot> parkingSpots = parker.getParkingSpots();
         parkingSpots.remove(spot);
-        personRepository.delete(parker);
         parker.setParkingSpots(parkingSpots);
         personRepository.save(parker);
     }

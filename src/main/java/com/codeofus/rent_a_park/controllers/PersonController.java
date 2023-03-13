@@ -8,6 +8,7 @@ import com.codeofus.rent_a_park.services.PersonService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,8 +39,8 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<PersonDto> getAllPersons() {
-        return personService.getAll().stream().map(mapper::personToDto).collect(Collectors.toList());
+    public List<PersonDto> getAllPersons(Pageable pageable) {
+        return personService.getAllPersons(pageable).stream().map(mapper::personToDto).collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")
