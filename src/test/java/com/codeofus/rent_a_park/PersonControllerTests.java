@@ -41,7 +41,7 @@ class PersonControllerTests {
 
     @Test
     public void testGetAllPersons() {
-        assertEquals(1, personController.getAllPersons().size());
+        assertEquals(1, personController.getAllPersons(0, 10, "id").size());
     }
 
     @Test
@@ -54,13 +54,13 @@ class PersonControllerTests {
                 .parkingSpots(null)
                 .build();
         personController.addPerson(mapper.personToDto(testPerson));
-        assertEquals(2, personController.getAllPersons().size());
+        assertEquals(2, personController.getAllPersons(0, 10, "id").size());
     }
 
     @Test
     public void testDeletePerson() {
         personController.deletePerson(testPerson.getId());
-        assertEquals(1, personController.getAllPersons().size());
+        assertEquals(1, personController.getAllPersons(0, 10, "id").size());
     }
 
 }

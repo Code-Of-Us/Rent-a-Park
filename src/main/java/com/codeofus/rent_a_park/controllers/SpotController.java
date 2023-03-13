@@ -7,6 +7,9 @@ import com.codeofus.rent_a_park.services.SpotService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +46,8 @@ public class SpotController {
 
     @GetMapping
     private List<SpotDto> getAllParkingSpots(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy) {
-        return spotService.getAllSpots(pageNo, pageSize, sortBy).stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        return spotService.getAllSpots(pageable).stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
     }
 
 }
