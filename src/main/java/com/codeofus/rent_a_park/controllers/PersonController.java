@@ -7,44 +7,44 @@ import com.codeofus.rent_a_park.services.PersonService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/v1/users")
+@RequestMapping(path = "/api/v1/persons")
 public class PersonController {
 
-    private PersonService personService;
-    private ParkingMapper mapper;
+    PersonService personService;
+    ParkingMapper mapper;
 
-    @PostMapping()
-    public ResponseEntity addPerson(@RequestBody PersonDto personDto) {
-        Person createdPerson = personService.addNewPerson(personDto);
-        return ResponseEntity.ok(mapper.personToDto(createdPerson));
+    @PostMapping
+    public PersonDto addPerson(@RequestBody PersonDto personDto) {
+        Person createdPerson = personService.addNewPerson(mapper.toPerson(personDto));
+        return mapper.personToDto(createdPerson);
     }
 
     @PutMapping
-    public ResponseEntity<PersonDto> updatePerson(@RequestBody PersonDto personDto) {
-        Optional<PersonDto> updatedUser = personService.updatePerson(personDto);
-        return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public Optional<Person> updatePerson(@RequestBody PersonDto personDto) {
+        return personService.updatePerson(mapper.toPerson(personDto));
     }
 
     @GetMapping
-    public List<PersonDto> getAllPersons() {
-        return personService.getAll();
+    public List<PersonDto> getAllPersons(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        return personService.getAllPersons(pageable).stream().map(mapper::personToDto).collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePerson(@PathVariable Integer id) {
+    public void deletePerson(@PathVariable Integer id) {
         personService.deletePerson(id);
-        return ResponseEntity
-                .noContent()
-                .build();
     }
 
 }

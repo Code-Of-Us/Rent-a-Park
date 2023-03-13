@@ -7,6 +7,9 @@ import com.codeofus.rent_a_park.services.SpotService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,35 +18,36 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "parking")
+@RequestMapping(path = "/api/v1/parking")
 public class SpotController {
 
     SpotService spotService;
     ParkingMapper parkingMapper;
 
-    @PostMapping()
-    private void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody PersonDto renter) {
+    @PostMapping
+    public void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody PersonDto renter) {
         spotService.rentASpot(parkingMapper.toSpot(spot), parkingMapper.toPerson(renter));
     }
 
     @PutMapping("/{id}/reserve")
-    private void reserveParkingSpot(@PathVariable int id, @RequestBody PersonDto parker) {
+    public void reserveParkingSpot(@PathVariable int id, @RequestBody PersonDto parker) {
         spotService.reserveSpot(id, parkingMapper.toPerson(parker));
     }
 
     @DeleteMapping("/{id}")
-    private void deleteParkingSpot(@PathVariable int id) {
+    public void deleteParkingSpot(@PathVariable int id) {
         spotService.deleteSpot(id);
     }
 
     @PutMapping("/{id}/cancel")
-    private void cancelReservation(@PathVariable int id, @RequestBody PersonDto parker) {
+    public void cancelReservation(@PathVariable int id, @RequestBody PersonDto parker) {
         spotService.cancelReservation(id, parkingMapper.toPerson(parker));
     }
 
     @GetMapping
-    private List<SpotDto> getAllParkingSpots() {
-        return spotService.getAllSpots().stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
+    public List<SpotDto> getAllParkingSpots(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        return spotService.getAllSpots(pageable).stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
     }
 
 }

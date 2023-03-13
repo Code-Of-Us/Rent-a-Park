@@ -6,6 +6,8 @@ import com.codeofus.rent_a_park.repositories.SpotRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,20 +18,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class SpotService {
-    private SpotRepository spotRepository;
-    private PersonService personService;
 
-    public List<Spot> getAllSpots() {
-        return spotRepository.findAll();
+    SpotRepository spotRepository;
+    PersonService personService;
+
+    public List<Spot> getAllSpots(Pageable pageable) {
+        Page<Spot> pagedResult = spotRepository.findAll(pageable);
+
+        if (pagedResult.hasContent()) {
+            return pagedResult.getContent();
+        } else {
+            return List.of();
+        }
     }
 
     @Transactional
     public void deleteSpot(Integer id) {
-        spotRepository
-                .findOneById(id)
-                .ifPresent(
-                        spotRepository::delete
-                );
+        spotRepository.deleteById(id);
     }
 
     @Transactional
@@ -50,7 +55,6 @@ public class SpotService {
     @Transactional
     public void cancelReservation(int id, Person parker) {
         Spot spot = spotRepository.getSpotById(id);
-        spotRepository.delete(spot);
         spot.setParker(null);
         spotRepository.save(spot);
         personService.cancelReservation(spot, parker);
