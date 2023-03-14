@@ -2,6 +2,7 @@ package com.codeofus.rent_a_park.controllers;
 
 import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.SpotDto;
+import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.services.SpotService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,12 @@ import java.util.stream.Collectors;
 public class SpotController {
 
     SpotService spotService;
-    ParkingMapper parkingMapper;
+    ParkingMapper mapper;
 
     @PostMapping
-    public void addNewParkingSpot(@RequestBody SpotDto spot, @RequestBody int renterId) {
-        spotService.rentASpot(parkingMapper.toSpot(spot), renterId);
+    public SpotDto addNewParkingSpot(@RequestBody SpotDto spotDto) {
+        Spot spot = spotService.addNewParkingSpot(mapper.toSpot(spotDto));
+        return mapper.spotToDto(spot);
     }
 
     @PutMapping("/{id}/reserve")
@@ -43,7 +45,7 @@ public class SpotController {
 
     @GetMapping
     public List<SpotDto> getAllParkingSpots(Pageable pageable) {
-        return spotService.getAllSpots(pageable).stream().map(parkingMapper::spotToDto).collect(Collectors.toList());
+        return spotService.getAllSpots(pageable).stream().map(mapper::spotToDto).collect(Collectors.toList());
     }
 
 }

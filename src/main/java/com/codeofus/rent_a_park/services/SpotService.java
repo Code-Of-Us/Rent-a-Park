@@ -56,14 +56,8 @@ public class SpotService {
     }
 
     @Transactional
-    public void rentASpot(Spot spot, int renterId) {
-        if (!personRepository.findById(renterId).isPresent()) {
-            throw new NoSuchElementException();
-        }
-        Person renter = personRepository.findById(renterId).stream().findFirst().get();
-        spot.setRenter(renter);
-        spotRepository.save(spot);
-        personService.addParkingSpot(spot, renter);
+    public Spot addNewParkingSpot(Spot spot) {
+        return spotRepository.save(spot);
     }
 
     @Transactional

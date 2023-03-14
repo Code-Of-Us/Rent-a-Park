@@ -15,7 +15,7 @@ public interface ParkingMapper {
 
     List<SpotDto> spotsToDtoList(List<Spot> spots);
 
-    Person toPerson(PersonDto driver);
+    Person toPerson(PersonDto person);
 
     Spot toSpot(SpotDto spot);
 

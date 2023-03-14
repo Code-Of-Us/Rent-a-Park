@@ -21,7 +21,6 @@ dependencies {
     implementation("org.mapstruct:mapstruct-processor:1.4.2.Final")
     implementation("org.springframework:spring-jdbc:6.0.4")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.projectlombok:lombok")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
