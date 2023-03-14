@@ -14,12 +14,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"rentedSpots", "parkingSpots"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Integer id;
 
     String firstName;
     String lastName;

@@ -11,12 +11,13 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Spot {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
 
     String address;
     LocalDateTime availability;
