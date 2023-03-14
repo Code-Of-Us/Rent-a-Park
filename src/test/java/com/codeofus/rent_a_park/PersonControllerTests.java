@@ -20,12 +20,11 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-@FieldDefaults(level = PRIVATE)
 @AutoConfigureMockMvc
 class PersonControllerTests extends IntegrationTest {
 
     static final String PERSONS_API = "/api/v1/persons";
-    
+
     static final String DEFAULT_FIRSTNAME = "Firstname";
     static final String DEFAULT_LASTNAME = "Lastname";
     static final String DEFAULT_REGISTRATION = "ZG1234-SO";
