@@ -15,11 +15,8 @@ import java.util.List;
 public class PersonDto implements Serializable {
 
     Integer id;
-    @NotNull
     String firstName;
-    @NotNull
     String lastName;
-    @NotNull
     String registration;
     List<SpotDto> rentedSpots;
     List<SpotDto> parkingSpots;
