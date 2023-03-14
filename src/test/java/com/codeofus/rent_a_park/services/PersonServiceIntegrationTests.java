@@ -20,9 +20,9 @@ public class PersonServiceIntegrationTests extends IntegrationTest {
 
     @Test
     public void verifyCacheIsReturnedAfterFirstCall() {
-        personService.getAll();
+        personService.getAllPersons();
         verify(personRepository, times(1)).findAll();
-        personService.getAll();
+        personService.getAllPersons();
         verifyNoMoreInteractions(personRepository);
     }
 }

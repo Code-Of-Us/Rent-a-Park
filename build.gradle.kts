@@ -16,7 +16,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-web-services")
-    implementation("org.projectlombok:lombok:1.18.22")
+    implementation("org.projectlombok:lombok:1.18.26")
     implementation("org.mapstruct:mapstruct:1.4.2.Final")
     implementation("org.mapstruct:mapstruct-processor:1.4.2.Final")
     implementation("org.springframework:spring-jdbc:6.0.4")

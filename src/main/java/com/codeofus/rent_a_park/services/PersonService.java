@@ -30,6 +30,11 @@ public class PersonService {
         return personRepository.save(person);
     }
 
+    @Cacheable(value = "persons")
+    public List<Person> getAllPersons() {
+        return personRepository.findAll();
+    }
+
     @Cacheable(value = "persons", key = "#pageable")
     public List<Person> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
