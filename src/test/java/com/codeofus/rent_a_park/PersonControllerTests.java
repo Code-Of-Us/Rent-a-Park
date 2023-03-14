@@ -4,8 +4,6 @@ import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
-import lombok.experimental.FieldDefaults;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,12 +12,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @AutoConfigureMockMvc
 class PersonControllerTests extends IntegrationTest {
 
@@ -39,11 +37,11 @@ class PersonControllerTests extends IntegrationTest {
     ParkingMapper mapper;
 
     private PersonDto createPersonDto() {
-        PersonDto personDto = new PersonDto();
-        personDto.setFirstName(DEFAULT_FIRSTNAME);
-        personDto.setLastName(DEFAULT_LASTNAME);
-        personDto.setRegistration(DEFAULT_REGISTRATION);
-        return personDto;
+        return PersonDto.builder()
+                .firstName(DEFAULT_FIRSTNAME)
+                .lastName(DEFAULT_LASTNAME)
+                .registration(DEFAULT_REGISTRATION)
+                .build();
     }
 
     private Person createPersonEntity() {
@@ -71,8 +69,6 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     public void getAllPersons() throws Exception {
-        createPersonEntity();
-
         mockMvc.perform(get(PERSONS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
