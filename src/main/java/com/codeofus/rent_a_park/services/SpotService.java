@@ -27,12 +27,7 @@ public class SpotService {
 
     public List<Spot> getAllSpots(Pageable pageable) {
         Page<Spot> pagedResult = spotRepository.findAll(pageable);
-
-        if (pagedResult.hasContent()) {
-            return pagedResult.getContent();
-        } else {
-            return List.of();
-        }
+        return pagedResult.getContent();
     }
 
     @Transactional
@@ -42,17 +37,13 @@ public class SpotService {
 
     @Transactional
     public void reserveSpot(int id, int parkerId) {
-        if (!spotRepository.findById(id).isPresent()) {
-            throw new NoSuchElementException();
-        }
-        Spot spot = spotRepository.findById(id).stream().findFirst().get();
-        if (!personRepository.findById(parkerId).isPresent()) {
-            throw new NoSuchElementException();
-        }
-        Person parker = personRepository.findById(parkerId).stream().findFirst().get();
+        Person parker = personRepository.findById(parkerId).orElseThrow(() -> {
+            throw new NoSuchElementException(String.format("Person with id [%d] not found", parkerId));
+        });
+        Spot spot = spotRepository.findById(id).orElseThrow(() -> {
+            throw new NoSuchElementException(String.format("Spot with id [%d] not found", id));
+        });
         spot.setParker(parker);
-        spotRepository.save(spot);
-        personService.reserveParkingSpot(spot, parker);
     }
 
     @Transactional
@@ -62,16 +53,12 @@ public class SpotService {
 
     @Transactional
     public void cancelReservation(int id, int parkerId) {
-        if (!spotRepository.findById(id).isPresent()) {
-            throw new NoSuchElementException();
+        Spot spot = spotRepository.findById(id).orElseThrow(() -> {
+            throw new NoSuchElementException(String.format("Spot with id [%d] not found", id));
+        });
+        if (spot.getParker().getId() != parkerId) {
+            throw new RuntimeException(String.format("Parker [%d] has not reservation on the spot [%d]", parkerId, id));
         }
-        Spot spot = spotRepository.findById(id).stream().findFirst().get();
         spot.setParker(null);
-        spotRepository.save(spot);
-        if (!personRepository.findById(parkerId).isPresent()) {
-            throw new NoSuchElementException();
-        }
-        Person parker = personRepository.findById(parkerId).stream().findFirst().get();
-        personService.cancelReservation(spot, parker);
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -28,8 +27,8 @@ public class SpotController {
         return mapper.spotToDto(spot);
     }
 
-    @PutMapping("/{id}/reserve")
-    public void reserveParkingSpot(@PathVariable int id, @RequestBody int parkerId) {
+    @PostMapping("/{id}/reserve/{parkerId}")
+    public void reserveParkingSpot(@PathVariable int id, @PathVariable int parkerId) {
         spotService.reserveSpot(id, parkerId);
     }
 
@@ -38,14 +37,15 @@ public class SpotController {
         spotService.deleteSpot(id);
     }
 
-    @PutMapping("/{id}/cancel")
-    public void cancelReservation(@PathVariable int id, @RequestBody int parkerId) {
+    @PostMapping("/{id}/cancel/{parkerId}")
+    public void cancelReservation(@PathVariable int id, @PathVariable int parkerId) {
         spotService.cancelReservation(id, parkerId);
     }
 
     @GetMapping
     public List<SpotDto> getAllParkingSpots(Pageable pageable) {
-        return spotService.getAllSpots(pageable).stream().map(mapper::spotToDto).collect(Collectors.toList());
+        List<Spot> spots = spotService.getAllSpots(pageable);
+        return mapper.spotsToDtoList(spots);
     }
 
 }
