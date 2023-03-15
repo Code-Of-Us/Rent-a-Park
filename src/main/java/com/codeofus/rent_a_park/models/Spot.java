@@ -5,6 +5,8 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -20,15 +22,14 @@ public class Spot {
     Integer id;
 
     String address;
-    LocalDateTime availability;
-    Integer capacity;
+
+    String zone;
 
     @ManyToOne
     @JoinColumn(name = "renter_id", nullable = false)
     Person renter;
 
-    @ManyToOne
-    @JoinColumn(name = "parker_id")
-    Person parker;
+    @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reservation> reservation = new HashSet<>();
 
 }
