@@ -32,7 +32,7 @@ public class Person implements Serializable {
     @OneToMany(mappedBy = "parker", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     List<Spot> parkingSpots = new ArrayList<>();
 
-    public Person UpdatePerson(Person person) {
+    public Person updatePerson(Person person) {
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
         this.registration = person.getRegistration();
