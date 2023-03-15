@@ -11,6 +11,8 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 var mapstructVersion = "1.4.2."
 var jdbcVersion = "6.0.4"
 var lombokVersion = "1.18.22"
+var testContainersVersion = "1.17.6"
+var jupiterVersion = "5.9.0"
 
 repositories {
     mavenCentral()
@@ -28,10 +30,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.testcontainers:testcontainers:1.17.6")
-    testImplementation("org.testcontainers:postgresql:1.17.6")
-    testImplementation("org.testcontainers:junit-jupiter:1.17.6")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+    testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
+    testImplementation("org.testcontainers:postgresql:$testContainersVersion")
+    testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
 
 
     runtimeOnly("org.postgresql:postgresql")
