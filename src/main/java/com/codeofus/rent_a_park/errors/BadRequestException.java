@@ -3,11 +3,9 @@ package com.codeofus.rent_a_park.errors;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BadRequestException extends Exception {
 
     String message;
