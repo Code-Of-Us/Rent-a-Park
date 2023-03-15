@@ -32,11 +32,11 @@ public class PersonService {
     @Cacheable(value = "persons", key = "#pageable")
     public List<Person> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
-        if (pagedResult.hasContent()) {
-            return pagedResult.getContent();
-        } else {
-            return List.of();
-        }
+        return pagedResult.getContent();
+    }
+
+    public Optional<Person> getPerson(long id) {
+        return personRepository.findById(id);
     }
 
     @Transactional
@@ -52,7 +52,7 @@ public class PersonService {
     }
 
     @Transactional
-    @CacheEvict(value = "student", key = "#personId")
+    @CacheEvict(value = "person", key = "#personId")
     public void deletePerson(Long personId) {
         personRepository.deleteById(personId);
     }

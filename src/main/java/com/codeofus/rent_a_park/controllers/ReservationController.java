@@ -31,11 +31,11 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     public ReservationDto getReservation(@PathVariable long id) throws BadRequestException {
-        Optional<Reservation> updatedReservation = reservationService.getReservation(id);
-        if (updatedReservation.isPresent()) {
-            return reservationMapper.reservationToReservationDTO(updatedReservation.get());
+        Optional<Reservation> reservation = reservationService.getReservation(id);
+        if (reservation.isPresent()) {
+            return reservationMapper.reservationToReservationDTO(reservation.get());
         } else {
-            throw new BadRequestException("An existing reservation must have an ID", "reservations", "id-does-not-exist");
+            throw new BadRequestException("Reservation does not exist", "reservations", "does-not-exist");
         }
     }
 

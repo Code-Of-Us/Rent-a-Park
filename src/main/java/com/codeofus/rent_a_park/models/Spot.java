@@ -31,4 +31,11 @@ public class Spot {
 
     @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Reservation> reservation = new HashSet<>();
+
+    public Spot updateSpot(Spot spot) {
+        this.address = spot.getAddress();
+        this.zone = spot.getZone();
+        this.renter = spot.getRenter();
+        return this;
+    }
 }
