@@ -28,6 +28,7 @@ public class ReservationService {
         return reservationRepository.findById(id);
     }
 
+    @Transactional
     public Reservation createReservation(Reservation reservation) {
         return reservationRepository.save(reservation);
     }
@@ -38,6 +39,7 @@ public class ReservationService {
         return reservationToUpdate.map(r -> r.updateReservation(reservation));
     }
 
+    @Transactional
     public void deleteReservation(Long reservationId) {
         reservationRepository.deleteById(reservationId);
     }

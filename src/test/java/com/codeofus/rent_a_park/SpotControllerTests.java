@@ -2,12 +2,14 @@ package com.codeofus.rent_a_park;
 
 import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.dtos.SpotDto;
+
 import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.mappers.SpotMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,7 +21,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -46,6 +47,9 @@ public class SpotControllerTests extends IntegrationTest {
     @Autowired
     PersonMapper personMapper;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     private SpotDto createSpotDto() {
         Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
         return SpotDto.builder().address(DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
@@ -67,6 +71,8 @@ public class SpotControllerTests extends IntegrationTest {
                 .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
     }
 
+    // TODO: remove the following methods to reservation controller test, add tests for get, post, put, delete
+
     @Test
     public void testAddNewParkingSpot() throws Exception {
         int sizeBeforeAdding = spotRepository.findAll().size();
@@ -74,7 +80,7 @@ public class SpotControllerTests extends IntegrationTest {
 
         mockMvc.perform(post(SPOTS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtil.convertObjectToJsonBytes(spotDto)))
+                        .content(objectMapper.writeValueAsBytes(spotDto)))
                 .andExpect(status().isOk())
                 .andReturn();
 

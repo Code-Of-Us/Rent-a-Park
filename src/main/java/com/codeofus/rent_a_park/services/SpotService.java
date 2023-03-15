@@ -30,6 +30,7 @@ public class SpotService {
         return spotRepository.findById(id);
     }
 
+    @Transactional
     public Spot createSpot(Spot spot) {
         return spotRepository.save(spot);
     }

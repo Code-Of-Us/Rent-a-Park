@@ -31,7 +31,7 @@ public class Person implements Serializable {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Reservation> reservation = new HashSet<>();
 
-    public Person UpdatePerson(Person person) {
+    public Person updatePerson(Person person) {
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
         this.registration = person.getRegistration();

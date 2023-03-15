@@ -8,14 +8,15 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -46,16 +47,16 @@ public class PersonService {
     }
 
     @Transactional
-    @CachePut(cacheNames = "person", key = "#person.id")
+    @Caching(put = {@CachePut(cacheNames = "person", key = "#person.id")}, evict = {@CacheEvict(value = "persons", allEntries = true)})
     public Person updatePerson(Person person) {
         Person personToUpdate = personRepository.findById(person.getId()).orElseThrow(() -> {
             throw new NoSuchElementException(String.format("Person with id [%d] not found", person.getId()));
         });
-        return personToUpdate.UpdatePerson(person);
+        return personToUpdate.updatePerson(person);
     }
 
     @Transactional
-    @CacheEvict(value = "person", key = "#personId")
+    @Caching(evict = {@CacheEvict(value = "person", key = "#personId"), @CacheEvict(value = "persons", allEntries = true)})
     public void deletePerson(Long personId) {
         personRepository.deleteById(personId);
     }

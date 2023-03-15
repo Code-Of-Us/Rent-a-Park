@@ -4,6 +4,7 @@ import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,7 +36,10 @@ class PersonControllerTests extends IntegrationTest {
     PersonRepository personRepository;
 
     @Autowired
-    PersonMapper mapper;
+    PersonMapper personMapper;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     private PersonDto createPersonDto() {
         return PersonDto.builder()
@@ -47,17 +51,17 @@ class PersonControllerTests extends IntegrationTest {
 
     private Person createAndSavePersonEntity() {
         PersonDto personDto = createPersonDto();
-        return personRepository.save(mapper.personDTOtoPerson(personDto));
+        return personRepository.save(personMapper.personDTOtoPerson(personDto));
     }
 
     @Test
-    void addNewPerson() throws Exception {
+    void createPerson() throws Exception {
         int sizeBeforeAdding = personRepository.findAll().size();
 
         PersonDto personDto = createPersonDto();
         mockMvc.perform(post(PERSONS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtil.convertObjectToJsonBytes(personDto)))
+                        .content(objectMapper.writeValueAsBytes(personDto)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -93,7 +97,7 @@ class PersonControllerTests extends IntegrationTest {
 
         mockMvc.perform(put(PERSONS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtil.convertObjectToJsonBytes(updatedPersonDto)))
+                        .content(objectMapper.writeValueAsBytes(updatedPersonDto)))
                 .andExpect(status().isOk())
                 .andReturn();
 
