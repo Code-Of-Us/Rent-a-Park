@@ -2,6 +2,7 @@ package com.codeofus.rent_a_park.services;
 
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
+import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
@@ -20,16 +22,11 @@ import java.util.List;
 public class SpotService {
 
     SpotRepository spotRepository;
-    PersonService personService;
+    PersonRepository personRepository;
 
     public List<Spot> getAllSpots(Pageable pageable) {
         Page<Spot> pagedResult = spotRepository.findAll(pageable);
-
-        if (pagedResult.hasContent()) {
-            return pagedResult.getContent();
-        } else {
-            return List.of();
-        }
+        return pagedResult.getContent();
     }
 
     @Transactional
@@ -38,25 +35,29 @@ public class SpotService {
     }
 
     @Transactional
-    public void reserveSpot(int id, Person parker) {
-        Spot spot = spotRepository.getSpotById(id);
+    public void reserveSpot(int id, int parkerId) {
+        Person parker = personRepository.findById(parkerId).orElseThrow(() -> {
+            throw new NoSuchElementException(String.format("Person with id [%d] not found", parkerId));
+        });
+        Spot spot = spotRepository.findById(id).orElseThrow(() -> {
+            throw new NoSuchElementException(String.format("Spot with id [%d] not found", id));
+        });
         spot.setParker(parker);
-        spotRepository.save(spot);
-        personService.reserveParkingSpot(spot, parker);
     }
 
     @Transactional
-    public void rentASpot(Spot spot, Person renter) {
-        spot.setRenter(renter);
-        spotRepository.save(spot);
-        personService.addParkingSpot(spot, renter);
+    public Spot addNewParkingSpot(Spot spot) {
+        return spotRepository.save(spot);
     }
 
     @Transactional
-    public void cancelReservation(int id, Person parker) {
-        Spot spot = spotRepository.getSpotById(id);
+    public void cancelReservation(int id, int parkerId) {
+        Spot spot = spotRepository.findById(id).orElseThrow(() -> {
+            throw new NoSuchElementException(String.format("Spot with id [%d] not found", id));
+        });
+        if (spot.getParker().getId() != parkerId) {
+            throw new RuntimeException(String.format("Parker [%d] has not reservation on the spot [%d]", parkerId, id));
+        }
         spot.setParker(null);
-        spotRepository.save(spot);
-        personService.cancelReservation(spot, parker);
     }
 }

@@ -1,6 +1,5 @@
 package com.codeofus.rent_a_park.dtos;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,11 +14,8 @@ import java.util.List;
 public class PersonDto implements Serializable {
 
     Integer id;
-    @NotNull
     String firstName;
-    @NotNull
     String lastName;
-    @NotNull
     String registration;
     List<SpotDto> rentedSpots;
     List<SpotDto> parkingSpots;

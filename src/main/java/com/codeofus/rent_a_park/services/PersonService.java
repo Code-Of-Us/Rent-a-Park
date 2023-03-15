@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -29,22 +29,15 @@ public class PersonService {
 
     public List<Person> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
-        if (pagedResult.hasContent()) {
-            return pagedResult.getContent();
-        } else {
-            return List.of();
-        }
+        return pagedResult.getContent();
     }
 
     @Transactional
-    public Optional<Person> updatePerson(Person person) {
-        return personRepository.findById(person.getId())
-                .flatMap(existingPerson -> {
-                    existingPerson.setFirstName(person.getFirstName());
-                    existingPerson.setLastName(person.getLastName());
-                    existingPerson.setRegistration(person.getRegistration());
-                    return Optional.of(existingPerson);
-                });
+    public Person updatePerson(Person person) {
+        Person personToUpdate = personRepository.findById(person.getId()).orElseThrow(() -> {
+            throw new NoSuchElementException(String.format("Person with id [%d] not found", person.getId()));
+        });
+        return personToUpdate.UpdatePerson(person);
     }
 
     @Transactional
