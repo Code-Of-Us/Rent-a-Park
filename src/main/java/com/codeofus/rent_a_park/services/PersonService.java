@@ -29,11 +29,7 @@ public class PersonService {
 
     public List<Person> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
-        if (pagedResult.hasContent()) {
-            return pagedResult.getContent();
-        } else {
-            return List.of();
-        }
+        return pagedResult.getContent();
     }
 
     @Transactional
