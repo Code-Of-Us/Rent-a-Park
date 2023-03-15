@@ -1,7 +1,7 @@
 package com.codeofus.rent_a_park;
 
-import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.PersonDto;
+import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class PersonControllerTests extends IntegrationTest {
     PersonRepository personRepository;
 
     @Autowired
-    ParkingMapper mapper;
+    PersonMapper mapper;
 
     private PersonDto createPersonDto() {
         return PersonDto.builder()
@@ -47,7 +47,7 @@ class PersonControllerTests extends IntegrationTest {
 
     private Person createAndSavePersonEntity() {
         PersonDto personDto = createPersonDto();
-        return personRepository.save(mapper.toPerson(personDto));
+        return personRepository.save(mapper.personDTOtoPerson(personDto));
     }
 
     @Test

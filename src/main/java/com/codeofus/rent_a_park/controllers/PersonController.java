@@ -22,18 +22,18 @@ import java.util.stream.Collectors;
 public class PersonController {
 
     PersonService personService;
-    PersonMapper mapper;
+    PersonMapper personMapper;
 
     @GetMapping
     public List<PersonDto> getAllPersons(Pageable pageable) {
-        return personService.getAllPersons(pageable).stream().map(mapper::personToPersonDTO).collect(Collectors.toList());
+        return personService.getAllPersons(pageable).stream().map(personMapper::personToPersonDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public PersonDto getPerson(@PathVariable long id) throws BadRequestException {
         Optional<Person> person = personService.getPerson(id);
         if (person.isPresent()) {
-            return mapper.personToPersonDTO(person.get());
+            return personMapper.personToPersonDTO(person.get());
         } else {
             throw new BadRequestException("Person does not exist", "persons", "does-not-exist");
         }
@@ -44,17 +44,18 @@ public class PersonController {
         if (personDto.getId() != null) {
             throw new BadRequestException("A new person cannot already have an ID", "persons", "id-exists");
         }
-        Person createdPerson = personService.createPerson(mapper.personDTOtoPerson(personDto));
-        return mapper.personToPersonDTO(createdPerson);
+        Person createdPerson = personService.createPerson(personMapper.personDTOtoPerson(personDto));
+        return personMapper.personToPersonDTO(createdPerson);
     }
 
     @PutMapping
-    public Optional<Person> updatePerson(@RequestBody PersonDto personDto) {
-        return personService.updatePerson(mapper.personDTOtoPerson(personDto));
+    public PersonDto updatePerson(@RequestBody PersonDto personDto) {
+        Person updatedPerson =  personService.updatePerson(personMapper.personDTOtoPerson(personDto));
+        return personMapper.personToPersonDTO(updatedPerson);
     }
 
     @DeleteMapping("/{id}")
-    public void deletePerson(@PathVariable Long id) {
+    public void deletePerson(@PathVariable long id) {
         personService.deletePerson(id);
     }
 

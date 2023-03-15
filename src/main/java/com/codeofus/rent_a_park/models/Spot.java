@@ -1,9 +1,11 @@
 package com.codeofus.rent_a_park.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Spot {
+public class Spot implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

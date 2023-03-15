@@ -13,6 +13,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"rentedSpots", "parkingSpots"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Person implements Serializable {
 
@@ -25,7 +26,6 @@ public class Person implements Serializable {
     String registration;
 
     @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @Transient
     Set<Spot> rentedSpots = new HashSet<>();
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)

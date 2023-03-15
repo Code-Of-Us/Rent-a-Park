@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -46,9 +47,11 @@ public class PersonService {
 
     @Transactional
     @CachePut(cacheNames = "person", key = "#person.id")
-    public Optional<Person> updatePerson(Person person) {
-        Optional<Person> personToUpdate = personRepository.findById(person.getId());
-        return personToUpdate.map(p -> p.UpdatePerson(person));
+    public Person updatePerson(Person person) {
+        Person personToUpdate = personRepository.findById(person.getId()).orElseThrow(() -> {
+            throw new NoSuchElementException(String.format("Person with id [%d] not found", person.getId()));
+        });
+        return personToUpdate.UpdatePerson(person);
     }
 
     @Transactional
