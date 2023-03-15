@@ -1,6 +1,8 @@
 package com.codeofus.rent_a_park.services;
 
+import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
+import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
@@ -30,9 +33,5 @@ public class SpotService {
         spotRepository.deleteById(id);
     }
 
-    @Transactional
-    public Spot addNewParkingSpot(Spot spot) {
-        return spotRepository.save(spot);
-    }
-
+    // TODO: add methods for get, put, post
 }

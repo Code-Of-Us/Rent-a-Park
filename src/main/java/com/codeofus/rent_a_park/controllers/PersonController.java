@@ -29,7 +29,7 @@ public class PersonController {
         if (personDto.getId() != null) {
             throw new BadRequestException("A new user cannot already have an ID", "users", "idexists");
         }
-        Person createdPerson = personService.addNewPerson(mapper.personDTOtoPerson(personDto));
+        Person createdPerson = personService.createPerson(mapper.personDTOtoPerson(personDto));
         return mapper.personToPersonDTO(createdPerson);
     }
 

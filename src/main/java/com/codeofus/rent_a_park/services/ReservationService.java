@@ -24,7 +24,7 @@ public class ReservationService {
         return reservationRepository.findAll(pageable).getContent();
     }
 
-    public Optional<Reservation> getReservation(Long id) {
+    public Optional<Reservation> getReservation(long id) {
         return reservationRepository.findById(id);
     }
 
@@ -32,6 +32,7 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    @Transactional
     public Optional<Reservation> updateReservation(Reservation reservation) {
         Optional<Reservation> reservationToUpdate = reservationRepository.findById(reservation.getId());
         return reservationToUpdate.map(r -> r.updateReservation(reservation));

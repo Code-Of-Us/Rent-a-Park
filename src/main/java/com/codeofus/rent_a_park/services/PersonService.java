@@ -24,11 +24,6 @@ public class PersonService {
 
     PersonRepository personRepository;
 
-    @Transactional
-    public Person addNewPerson(Person person) {
-        return personRepository.save(person);
-    }
-
     @Cacheable(value = "persons")
     public List<Person> getAllPersons() {
         return personRepository.findAll();
@@ -42,6 +37,11 @@ public class PersonService {
         } else {
             return List.of();
         }
+    }
+
+    @Transactional
+    public Person createPerson(Person person) {
+        return personRepository.save(person);
     }
 
     @Transactional

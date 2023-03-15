@@ -29,6 +29,16 @@ public class ReservationController {
         return reservationMapper.reservationToReservationDTO(reservationService.getAll(pageable));
     }
 
+    @GetMapping("/{id}")
+    public ReservationDto getReservation(@PathVariable long id) throws BadRequestException {
+        Optional<Reservation> updatedReservation = reservationService.getReservation(id);
+        if (updatedReservation.isPresent()) {
+            return reservationMapper.reservationToReservationDTO(updatedReservation.get());
+        } else {
+            throw new BadRequestException("An existing reservation must have an ID", "reservations", "id-does-not-exist");
+        }
+    }
+
     @PostMapping
     public ReservationDto createReservation(@RequestBody ReservationDto reservationDto) throws BadRequestException {
         if (reservationDto.getId() != null) {
@@ -48,7 +58,7 @@ public class ReservationController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
     }
