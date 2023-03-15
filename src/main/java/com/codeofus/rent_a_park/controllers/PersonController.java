@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,8 +29,9 @@ public class PersonController {
     }
 
     @PutMapping
-    public Optional<Person> updatePerson(@RequestBody PersonDto personDto) {
-        return personService.updatePerson(mapper.toPerson(personDto));
+    public PersonDto updatePerson(@RequestBody PersonDto personDto) {
+        Person updatedPerson =  personService.updatePerson(mapper.toPerson(personDto));
+        return mapper.personToDto(updatedPerson);
     }
 
     @GetMapping
