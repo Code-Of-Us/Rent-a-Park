@@ -3,6 +3,7 @@ package com.codeofus.rent_a_park.dtos;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -16,7 +17,7 @@ public class PersonDto {
     String firstName;
     String lastName;
     String registration;
-    List<SpotDto> rentedSpots;
-    List<SpotDto> parkingSpots;
+    List<SpotDto> rentedSpots = new ArrayList<>();
+    List<SpotDto> parkingSpots = new ArrayList<>();
 
 }

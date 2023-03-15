@@ -26,12 +26,10 @@ public class Person implements Serializable {
     String lastName;
     String registration;
 
-    @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @Transient
+    @OneToMany(mappedBy = "renter", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     List<Spot> rentedSpots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @Transient
+    @OneToMany(mappedBy = "parker", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     List<Spot> parkingSpots = new ArrayList<>();
 
     public Person UpdatePerson(Person person) {
