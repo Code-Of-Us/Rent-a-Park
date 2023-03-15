@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SpotDto {
 
-    int id;
+    Integer id;
     String address;
     LocalDateTime availability;
     Integer capacity;

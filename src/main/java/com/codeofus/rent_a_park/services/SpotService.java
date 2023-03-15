@@ -23,7 +23,6 @@ public class SpotService {
 
     SpotRepository spotRepository;
     PersonRepository personRepository;
-    PersonService personService;
 
     public List<Spot> getAllSpots(Pageable pageable) {
         Page<Spot> pagedResult = spotRepository.findAll(pageable);

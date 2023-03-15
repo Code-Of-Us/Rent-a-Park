@@ -1,10 +1,8 @@
 package com.codeofus.rent_a_park.dtos;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Data
