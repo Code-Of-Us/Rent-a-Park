@@ -51,7 +51,7 @@ public class PersonService {
     }
 
     @Transactional
-    @CacheEvict(value = "student", key = "#personId")
+    @CacheEvict(value = "person", key = "#personId")
     public void deletePerson(Integer personId) {
         personRepository.deleteById(personId);
     }
