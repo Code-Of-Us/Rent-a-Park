@@ -7,6 +7,7 @@ import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,6 +43,9 @@ public class SpotControllerTests extends IntegrationTest {
     @Autowired
     ParkingMapper mapper;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     private SpotDto createSpotDto() {
         Person person = personRepository.save(mapper.toPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
         return SpotDto.builder().address(DEFAULT_ADDRESS).capacity(DEFAULT_CAPACITY).renter(mapper.personToDto(person)).build();
@@ -70,7 +74,7 @@ public class SpotControllerTests extends IntegrationTest {
 
         mockMvc.perform(post(SPOTS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtil.convertObjectToJsonBytes(spotDto)))
+                        .content(objectMapper.writeValueAsBytes(spotDto)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -96,7 +100,7 @@ public class SpotControllerTests extends IntegrationTest {
         Spot spotEntity = spotRepository.save(mapper.toSpot(spotDto));
         mockMvc.perform(post(SPOTS_API + "/{id}/cancel/{parkerId}", spotEntity.getId(), spotEntity.getParker().getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtil.convertObjectToJsonBytes(spotEntity)))
+                        .content(objectMapper.writeValueAsBytes(spotEntity)))
                 .andExpect(status().isOk());
         List<Spot> spotList = spotRepository.findAll();
         Spot spot = spotList.get(spotList.size() - 1);
@@ -109,7 +113,7 @@ public class SpotControllerTests extends IntegrationTest {
         Spot spotEntity = createSpotEntity();
         mockMvc.perform(post(SPOTS_API + "/{id}/reserve/{parkerId}", spotEntity.getId(), parker.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtil.convertObjectToJsonBytes(spotEntity)))
+                        .content(objectMapper.writeValueAsBytes(spotEntity)))
                 .andExpect(status().isOk());
         List<Spot> spotList = spotRepository.findAll();
         Spot spot = spotList.get(spotList.size() - 1);
