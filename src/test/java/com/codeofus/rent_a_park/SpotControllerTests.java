@@ -13,8 +13,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -38,13 +43,12 @@ public class SpotControllerTests extends IntegrationTest {
     ParkingMapper mapper;
 
     private SpotDto createSpotDto() {
-        return SpotDto.builder().address(DEFAULT_ADDRESS).capacity(DEFAULT_CAPACITY).build();
+        Person person = personRepository.save(mapper.toPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
+        return SpotDto.builder().address(DEFAULT_ADDRESS).capacity(DEFAULT_CAPACITY).renter(mapper.personToDto(person)).build();
     }
 
     private Spot createSpotEntity() {
-        Person person = personRepository.save(mapper.toPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
         SpotDto spotDto = createSpotDto();
-        spotDto.setRenter(mapper.personToDto(person));
         return spotRepository.save(mapper.toSpot(spotDto));
     }
 
@@ -59,5 +63,57 @@ public class SpotControllerTests extends IntegrationTest {
                 .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
     }
 
-    //TODO: Add more tests
+    @Test
+    public void testAddNewParkingSpot() throws Exception {
+        int sizeBeforeAdding = spotRepository.findAll().size();
+        SpotDto spotDto = createSpotDto();
+
+        mockMvc.perform(post(SPOTS_API)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtil.convertObjectToJsonBytes(spotDto)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<Spot> spotList = spotRepository.findAll();
+        assertThat(spotList).hasSize(sizeBeforeAdding + 1);
+        Spot spot = spotList.get(spotList.size() - 1);
+        assertEquals(spot.getCapacity(), DEFAULT_CAPACITY);
+        assertEquals(spot.getAddress(), DEFAULT_ADDRESS);
+    }
+
+    @Test
+    public void testDeleteParking() throws Exception {
+        Spot spot = createSpotEntity();
+        mockMvc.perform(delete(SPOTS_API + "/{id}", spot.getId()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testCancelReservation() throws Exception {
+        SpotDto spotDto = createSpotDto();
+        Person parker = personRepository.save(Person.builder().firstName("Parker").build());
+        spotDto.setParker(mapper.personToDto(parker));
+        Spot spotEntity = spotRepository.save(mapper.toSpot(spotDto));
+        mockMvc.perform(post(SPOTS_API + "/{id}/cancel/{parkerId}", spotEntity.getId(), spotEntity.getParker().getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtil.convertObjectToJsonBytes(spotEntity)))
+                .andExpect(status().isOk());
+        List<Spot> spotList = spotRepository.findAll();
+        Spot spot = spotList.get(spotList.size() - 1);
+        assertNull(spot.getParker());
+    }
+
+    @Test
+    public void testReserveParking() throws Exception {
+        Person parker = personRepository.save(Person.builder().firstName("Parker").build());
+        Spot spotEntity = createSpotEntity();
+        mockMvc.perform(post(SPOTS_API + "/{id}/reserve/{parkerId}", spotEntity.getId(), parker.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtil.convertObjectToJsonBytes(spotEntity)))
+                .andExpect(status().isOk());
+        List<Spot> spotList = spotRepository.findAll();
+        Spot spot = spotList.get(spotList.size() - 1);
+        assertEquals("Parker", spot.getParker().getFirstName());
+    }
+
 }
