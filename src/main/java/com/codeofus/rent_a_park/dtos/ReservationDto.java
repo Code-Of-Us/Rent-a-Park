@@ -14,7 +14,7 @@ public class ReservationDto {
 
     Long id;
 
-    PersonDto renter;
+    PersonDto person;
 
     SpotDto spot;
 

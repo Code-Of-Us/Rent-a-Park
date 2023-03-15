@@ -1,18 +1,17 @@
 package com.codeofus.rent_a_park.models;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
+@Data
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Reservation {
     @Id
@@ -30,4 +29,10 @@ public class Reservation {
     ZonedDateTime createdAt;
     ZonedDateTime reservedFrom;
     ZonedDateTime reservedUntil;
+
+    public Reservation updateReservation(Reservation reservation) {
+        this.person = reservation.getPerson();
+        this.spot = reservation.getSpot();
+        return this;
+    }
 }
