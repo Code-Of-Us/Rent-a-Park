@@ -26,6 +26,7 @@ class PersonControllerTests extends IntegrationTest {
     static final String DEFAULT_FIRSTNAME = "Firstname";
     static final String DEFAULT_LASTNAME = "Lastname";
     static final String DEFAULT_REGISTRATION = "ZG1234-SO";
+    static final String UPDATED_FIRSTNAME = "Updated-Firstname";
 
     @Autowired
     MockMvc mockMvc;
@@ -44,7 +45,7 @@ class PersonControllerTests extends IntegrationTest {
                 .build();
     }
 
-    private Person createPersonEntity() {
+    private Person createAndSavePersonEntity() {
         PersonDto personDto = createPersonDto();
         return personRepository.save(mapper.toPerson(personDto));
     }
@@ -79,9 +80,24 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     public void deletePerson() throws Exception {
-        Person person = createPersonEntity();
+        Person person = createAndSavePersonEntity();
 
         mockMvc.perform(delete(PERSONS_API + "/{id}", person.getId()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void updatePerson() throws Exception {
+        Person person = createAndSavePersonEntity();
+        PersonDto updatedPersonDto = PersonDto.builder().id(person.getId()).firstName(UPDATED_FIRSTNAME).build();
+
+        mockMvc.perform(put(PERSONS_API)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtil.convertObjectToJsonBytes(updatedPersonDto)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Person updatedPerson = personRepository.findById(person.getId()).get();
+        assertEquals(updatedPerson.getFirstName(), UPDATED_FIRSTNAME);
     }
 }
