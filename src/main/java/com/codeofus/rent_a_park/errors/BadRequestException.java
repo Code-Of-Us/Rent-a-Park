@@ -1,23 +1,18 @@
 package com.codeofus.rent_a_park.errors;
 
-public class BadRequestException extends Throwable {
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class BadRequestException extends Exception {
 
     String message;
+
     String entityName;
+
     String errorKey;
-
-    public BadRequestException(String message, String entityName, String errorKey) {
-        this.message = message;
-        this.entityName = entityName;
-        this.errorKey = errorKey;
-    }
-
-    public String getEntityName() {
-        return entityName;
-    }
-
-    public String getErrorKey() {
-        return errorKey;
-    }
-
 }
