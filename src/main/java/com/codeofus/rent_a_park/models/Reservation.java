@@ -17,17 +17,17 @@ import java.time.ZonedDateTime;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @ManyToOne
     @JoinColumn(name = "person_id")
-    private Person person;
+    Person person;
 
     @ManyToOne
     @JoinColumn(name = "spot_id")
-    private Spot spot;
+    Spot spot;
 
-    private ZonedDateTime createdAt;
-    private ZonedDateTime reservedFrom;
-    private ZonedDateTime reservedTo;
+    ZonedDateTime createdAt;
+    ZonedDateTime reservedFrom;
+    ZonedDateTime reservedUntil;
 }

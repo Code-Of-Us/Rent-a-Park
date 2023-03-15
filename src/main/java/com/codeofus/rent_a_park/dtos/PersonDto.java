@@ -14,11 +14,11 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PersonDto {
 
-    Integer id;
-    String firstName;
-    String lastName;
-    String registration;
-    List<SpotDto> rentedSpots;
-    List<SpotDto> parkingSpots;
+    Long id;
 
+    String firstName;
+
+    String lastName;
+
+    String registration;
 }

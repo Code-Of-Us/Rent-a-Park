@@ -3,20 +3,24 @@ package com.codeofus.rent_a_park.dtos;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SpotDto {
+public class ReservationDto {
 
     Long id;
 
-    String address;
-
-    String zone;
-
     PersonDto renter;
+
+    SpotDto spot;
+
+    ZonedDateTime createdAt;
+
+    ZonedDateTime reservedFrom;
+
+    ZonedDateTime reservedUntil;
 }

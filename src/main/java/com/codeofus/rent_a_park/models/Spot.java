@@ -19,7 +19,7 @@ public class Spot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     String address;
 
@@ -30,6 +30,5 @@ public class Spot {
     Person renter;
 
     @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Reservation> reservation = new HashSet<>();
-
+    Set<Reservation> reservation = new HashSet<>();
 }

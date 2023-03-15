@@ -18,7 +18,7 @@ public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     String firstName;
     String lastName;
@@ -29,7 +29,7 @@ public class Person implements Serializable {
     Set<Spot> rentedSpots = new HashSet<>();
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Reservation> reservation = new HashSet<>();
+    Set<Reservation> reservation = new HashSet<>();
 
     public Person UpdatePerson(Person person) {
         this.firstName = person.getFirstName();
