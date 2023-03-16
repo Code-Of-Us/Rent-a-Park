@@ -1,5 +1,6 @@
 plugins {
     java
+    id("maven-publish")
     id("org.springframework.boot") version "2.7.9"
     id("io.spring.dependency-management") version "1.1.0"
 }
@@ -14,6 +15,24 @@ var lombokVersion = "1.18.22"
 
 repositories {
     mavenCentral()
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ivona13/Rates")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("gpr") {
+            from(components["java"])
+        }
+    }
 }
 
 dependencies {
