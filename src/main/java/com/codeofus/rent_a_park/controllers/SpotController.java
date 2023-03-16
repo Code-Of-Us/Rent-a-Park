@@ -28,7 +28,7 @@ public class SpotController {
         return spotService.getAll(pageable).stream().map(spotMapper::spotToSpotDTO).collect(Collectors.toList());
     }
 
-    @GetMapping ("/{id}")
+    @GetMapping("/{id}")
     public SpotDto getSpot(@PathVariable long id) throws BadRequestException {
         Spot spot = spotService.getSpot(id);
         if (spot != null) {

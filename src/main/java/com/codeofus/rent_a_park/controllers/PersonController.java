@@ -50,7 +50,7 @@ public class PersonController {
 
     @PutMapping
     public PersonDto updatePerson(@RequestBody PersonDto personDto) {
-        Person updatedPerson =  personService.updatePerson(personMapper.personDTOtoPerson(personDto));
+        Person updatedPerson = personService.updatePerson(personMapper.personDTOtoPerson(personDto));
         return personMapper.personToPersonDTO(updatedPerson);
     }
 

@@ -18,8 +18,6 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
-        return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofDays(ttlDays))
-                .disableCachingNullValues();
+        return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(ttlDays)).disableCachingNullValues();
     }
 }
