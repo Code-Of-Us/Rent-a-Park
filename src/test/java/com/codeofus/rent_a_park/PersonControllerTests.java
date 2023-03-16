@@ -61,7 +61,7 @@ class PersonControllerTests extends IntegrationTest {
     }
 
     @Test
-    void createPerson() throws Exception {
+    void testCreatePerson() throws Exception {
         int sizeBeforeAdding = personRepository.findAll().size();
 
         PersonDto personDto = createPersonDto();
@@ -79,7 +79,7 @@ class PersonControllerTests extends IntegrationTest {
     }
 
     @Test
-    public void getAllPersons() throws Exception {
+    public void testGetAllPersons() throws Exception {
         createAndSavePersonEntity();
         mockMvc.perform(get(PERSONS_API))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ class PersonControllerTests extends IntegrationTest {
     }
 
     @Test
-    public void deletePerson() throws Exception {
+    public void testDeletePerson() throws Exception {
         Person person = createAndSavePersonEntity();
 
         mockMvc.perform(delete(PERSONS_API + "/{id}", person.getId()))
@@ -99,7 +99,7 @@ class PersonControllerTests extends IntegrationTest {
     }
 
     @Test
-    void updatePerson() throws Exception {
+    void testUpdatePerson() throws Exception {
         Person person = createAndSavePersonEntity();
         PersonDto updatedPersonDto = PersonDto.builder().id(person.getId()).firstName(UPDATED_FIRSTNAME).build();
 
