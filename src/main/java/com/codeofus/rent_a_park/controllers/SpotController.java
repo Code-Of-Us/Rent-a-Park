@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -31,9 +30,9 @@ public class SpotController {
 
     @GetMapping ("/{id}")
     public SpotDto getSpot(@PathVariable long id) throws BadRequestException {
-        Optional<Spot> spot = spotService.getSpot(id);
-        if (spot.isPresent()) {
-            return spotMapper.spotToSpotDTO(spot.get());
+        Spot spot = spotService.getSpot(id);
+        if (spot != null) {
+            return spotMapper.spotToSpotDTO(spot);
         } else {
             throw new BadRequestException("Spot does not exist", "spots", "does-not-exist");
         }
@@ -45,13 +44,14 @@ public class SpotController {
         return spotMapper.spotToSpotDTO(spot);
     }
 
-    @PutMapping("/{id}")
-    public Optional<Spot> updateSpot(Spot spot) {
-        return spotService.updateSpot(spot);
+    @PutMapping
+    public SpotDto updateSpot(@RequestBody SpotDto spotDto) {
+        Spot spot = spotService.updateSpot(spotMapper.spotDTOtoSpot(spotDto));
+        return spotMapper.spotToSpotDTO(spot);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteParkingSpot(@PathVariable Long id) {
+    public void deleteParkingSpot(@PathVariable long id) {
         spotService.deleteSpot(id);
     }
 

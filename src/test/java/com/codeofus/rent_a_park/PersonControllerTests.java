@@ -5,6 +5,7 @@ import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,6 +42,11 @@ class PersonControllerTests extends IntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @BeforeEach
+    public void setUp() {
+        personRepository.deleteAll();
+    }
+
     private PersonDto createPersonDto() {
         return PersonDto.builder()
                 .firstName(DEFAULT_FIRSTNAME)
@@ -74,6 +80,7 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     public void getAllPersons() throws Exception {
+        createAndSavePersonEntity();
         mockMvc.perform(get(PERSONS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -88,6 +95,7 @@ class PersonControllerTests extends IntegrationTest {
 
         mockMvc.perform(delete(PERSONS_API + "/{id}", person.getId()))
                 .andExpect(status().isOk());
+        assertEquals(0, personRepository.findAll().size());
     }
 
     @Test

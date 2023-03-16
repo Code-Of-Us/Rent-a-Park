@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
@@ -26,8 +25,8 @@ public class SpotService {
         return pagedResult.getContent();
     }
 
-    public Optional<Spot> getSpot(long id) {
-        return spotRepository.findById(id);
+    public Spot getSpot(long id) {
+        return spotRepository.findById(id).get();
     }
 
     @Transactional
@@ -36,9 +35,9 @@ public class SpotService {
     }
 
     @Transactional
-    public Optional<Spot> updateSpot(Spot spot) {
-        Optional<Spot> spotToUpdate = spotRepository.findById(spot.getId());
-        return spotToUpdate.map(r -> r.updateSpot(spot));
+    public Spot updateSpot(Spot spot) {
+        Spot spotToUpdate = spotRepository.findById(spot.getId()).get();
+        return spotToUpdate.updateSpot(spot);
     }
 
 

@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"rentedSpots", "parkingSpots"})
+@ToString(exclude = {"rentedSpots"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Person implements Serializable {
 
