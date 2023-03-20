@@ -33,6 +33,8 @@ public class Reservation {
     public Reservation updateReservation(Reservation reservation) {
         this.person = reservation.getPerson();
         this.spot = reservation.getSpot();
+        this.reservedFrom = reservation.getReservedFrom();
+        this.reservedUntil = reservation.getReservedUntil();
         return this;
     }
 }
