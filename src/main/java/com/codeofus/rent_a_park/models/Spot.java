@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Spot implements Serializable {
+public class Spot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
