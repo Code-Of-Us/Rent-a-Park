@@ -42,6 +42,7 @@ public class PersonService {
     }
 
     @Transactional
+    @CacheEvict(value = "persons", allEntries = true)
     public Person createPerson(Person person) {
         return personRepository.save(person);
     }
