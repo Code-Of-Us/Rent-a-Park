@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: parking
+  template:
+    metadata:
+      labels:
+        app: parking
+    spec:
+      containers:
+        - image: ghcr.io/ivona13/parking:0.0.4
+          name: parking
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATASOURCE_PASSWORD
+              value: postgres
+            - name: DATASOURCE_URL
+              value: jdbc:postgresql://postgresql:5432/rentapark
+            - name: DATASOURCE_USERNAME
+              value: postgres
+            - name: REDIS_HOST
+              value: redis
+      imagePullSecrets:
+        - name: ghcr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: parking-svc
+spec:
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: parking
+  type: NodePort
