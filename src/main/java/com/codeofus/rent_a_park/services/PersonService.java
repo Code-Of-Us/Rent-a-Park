@@ -6,6 +6,7 @@ import com.codeofus.rent_a_park.repositories.PersonRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.Hibernate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,12 +34,21 @@ public class PersonService {
 
     @Cacheable(value = "persons")
     public List<Person> getAllPersons() {
-        return personRepository.findAll();
+        List<Person> persons = personRepository.findAll();
+        persons.forEach(p -> {
+            Hibernate.initialize(p.getParkingSpots());
+            Hibernate.initialize(p.getRentedSpots());
+        });
+        return persons;
     }
 
     @Cacheable(value = "persons", key = "#pageable")
     public List<Person> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
+        pagedResult.forEach(p -> {
+            Hibernate.initialize(p.getParkingSpots());
+            Hibernate.initialize(p.getRentedSpots());
+        });
         return pagedResult.getContent();
     }
 

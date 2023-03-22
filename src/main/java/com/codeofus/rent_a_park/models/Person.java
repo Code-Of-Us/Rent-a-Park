@@ -1,6 +1,5 @@
 package com.codeofus.rent_a_park.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -26,10 +25,10 @@ public class Person implements Serializable {
     String lastName;
     String registration;
 
-    @OneToMany(mappedBy = "renter", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Spot> rentedSpots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parker", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "parker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Spot> parkingSpots = new ArrayList<>();
 
     public Person updatePerson(Person person) {

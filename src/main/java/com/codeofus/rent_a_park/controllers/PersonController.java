@@ -24,7 +24,7 @@ public class PersonController {
     ParkingMapper mapper;
 
     @PostMapping
-    public PersonDto addPerson(@RequestBody PersonDto personDto) throws BadRequestException {
+    public PersonDto addPerson(@RequestBody PersonDto personDto) {
         if (personDto.getId() != null) {
             throw new BadRequestException("A new user cannot already have an ID", "users", "idexists");
         }
