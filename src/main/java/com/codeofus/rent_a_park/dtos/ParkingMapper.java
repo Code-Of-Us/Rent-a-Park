@@ -23,4 +23,12 @@ public interface ParkingMapper {
 
     Spot toSpot(SpotDto spot);
 
+    PersonDto personInfoToPersonDto(PersonInfo personInfo);
+
+    List<PersonDto> personInfoListToPersonDtoList(List<PersonInfo> personInfo);
+
+    PersonInfo personToPersonInfo(Person person);
+
+    List<PersonInfo> personListToPersonInfoList(List<Person> personList);
+
 }

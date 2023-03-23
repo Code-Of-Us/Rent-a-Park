@@ -2,6 +2,7 @@ package com.codeofus.rent_a_park.controllers;
 
 import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.PersonDto;
+import com.codeofus.rent_a_park.dtos.PersonInfo;
 import com.codeofus.rent_a_park.errors.BadRequestException;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.services.PersonService;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -34,13 +34,14 @@ public class PersonController {
 
     @PutMapping
     public PersonDto updatePerson(@RequestBody PersonDto personDto) {
-        Person updatedPerson =  personService.updatePerson(mapper.toPerson(personDto));
+        Person updatedPerson = personService.updatePerson(mapper.toPerson(personDto));
         return mapper.personToDto(updatedPerson);
     }
 
     @GetMapping
     public List<PersonDto> getAllPersons(Pageable pageable) {
-        return personService.getAllPersons(pageable).stream().map(mapper::personToDto).collect(Collectors.toList());
+        List<PersonInfo> personInfos = personService.getAllPersons(pageable);
+        return mapper.personInfoListToPersonDtoList(personInfos);
     }
 
     @DeleteMapping("/{id}")

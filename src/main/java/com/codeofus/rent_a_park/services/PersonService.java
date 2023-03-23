@@ -1,12 +1,13 @@
 package com.codeofus.rent_a_park.services;
 
+import com.codeofus.rent_a_park.dtos.ParkingMapper;
+import com.codeofus.rent_a_park.dtos.PersonInfo;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.Hibernate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,29 +28,22 @@ public class PersonService {
 
     PersonRepository personRepository;
 
+    ParkingMapper mapper;
+
     @Transactional
     public Person addNewPerson(Person person) {
         return personRepository.save(person);
     }
 
     @Cacheable(value = "persons")
-    public List<Person> getAllPersons() {
-        List<Person> persons = personRepository.findAll();
-        persons.forEach(p -> {
-            Hibernate.initialize(p.getParkingSpots());
-            Hibernate.initialize(p.getRentedSpots());
-        });
-        return persons;
+    public List<PersonInfo> getAllPersons() {
+        return mapper.personListToPersonInfoList(personRepository.findAll());
     }
 
     @Cacheable(value = "persons", key = "#pageable")
-    public List<Person> getAllPersons(Pageable pageable) {
+    public List<PersonInfo> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
-        pagedResult.forEach(p -> {
-            Hibernate.initialize(p.getParkingSpots());
-            Hibernate.initialize(p.getRentedSpots());
-        });
-        return pagedResult.getContent();
+        return mapper.personListToPersonInfoList(pagedResult.getContent());
     }
 
     @Transactional
