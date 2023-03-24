@@ -11,8 +11,14 @@ services:
     ports:
       - "5433:5433"
   redis:
-    image: 'bitnami/redis:latest'
+    container_name: "redis"
+    image: "bitnami/redis:latest"
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "6379:6379"
+  eureka:
+    container_name: "eureka_server"
+    image: "ghcr.io/code-of-us/eureka-server:latest"
+    ports:
+      - "8761:8761"
