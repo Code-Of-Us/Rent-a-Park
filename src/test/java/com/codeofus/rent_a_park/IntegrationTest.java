@@ -40,7 +40,7 @@ public class IntegrationTest {
         System.setProperty("spring.datasource.password", postgres.getPassword());
         System.setProperty("spring.redis.host", redis.getHost());
         System.setProperty("spring.redis.port", redis.getMappedPort(REDIS_PORT).toString());
-        System.setProperty("eureka.client.service-url.defaultZone", "http://" + eurekaServer.getIpAddress() + ":" + eurekaServer.getMappedPort(8761) + "/eureka");
+        System.setProperty("eureka.client.service-url.defaultZone", "http://" + eurekaServer.getIpAddress() + ":" + eurekaServer.getMappedPort(EUREKA_PORT) + "/eureka");
     }
 
     @AfterAll
