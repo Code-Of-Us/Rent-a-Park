@@ -25,7 +25,7 @@ public class SpotService {
         return pagedResult.getContent();
     }
 
-    public Spot getSpot(long id) {
+    public Spot getSpot(int id) {
         return spotRepository.findById(id).get();
     }
 
@@ -42,7 +42,7 @@ public class SpotService {
 
 
     @Transactional
-    public void deleteSpot(Long id) {
+    public void deleteSpot(int id) {
         spotRepository.deleteById(id);
     }
 }

@@ -5,8 +5,8 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -19,17 +19,17 @@ public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Integer id;
 
     String firstName;
     String lastName;
     String registration;
 
     @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    Set<Spot> rentedSpots = new HashSet<>();
+    List<Spot> rentedSpots = new ArrayList<>();
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<Reservation> reservation = new HashSet<>();
+    List<Reservation> reservation = new ArrayList<>();
 
     public Person updatePerson(Person person) {
         this.firstName = person.getFirstName();

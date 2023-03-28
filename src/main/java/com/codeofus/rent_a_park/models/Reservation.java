@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Integer id;
 
     @ManyToOne
     @JoinColumn(name = "person_id")

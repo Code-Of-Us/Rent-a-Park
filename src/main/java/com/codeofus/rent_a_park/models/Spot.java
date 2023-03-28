@@ -5,7 +5,9 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,7 +21,7 @@ public class Spot implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Integer id;
 
     String address;
 
@@ -30,7 +32,7 @@ public class Spot implements Serializable {
     Person renter;
 
     @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<Reservation> reservation = new HashSet<>();
+    List<Reservation> reservation = new ArrayList<>();
 
     public Spot updateSpot(Spot spot) {
         this.address = spot.getAddress();

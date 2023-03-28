@@ -1,6 +1,7 @@
 package com.codeofus.rent_a_park.controllers;
 
 import com.codeofus.rent_a_park.dtos.PersonDto;
+import com.codeofus.rent_a_park.dtos.PersonInfo;
 import com.codeofus.rent_a_park.errors.BadRequestException;
 import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -26,11 +26,12 @@ public class PersonController {
 
     @GetMapping
     public List<PersonDto> getAllPersons(Pageable pageable) {
-        return personService.getAllPersons(pageable).stream().map(personMapper::personToPersonDTO).collect(Collectors.toList());
+        List<PersonInfo> personInfos = personService.getAllPersons(pageable);
+        return personMapper.personInfoListToPersonDtoList(personInfos);
     }
 
     @GetMapping("/{id}")
-    public PersonDto getPerson(@PathVariable long id) throws BadRequestException {
+    public PersonDto getPerson(@PathVariable int id) throws BadRequestException {
         Optional<Person> person = personService.getPerson(id);
         if (person.isPresent()) {
             return personMapper.personToPersonDTO(person.get());
@@ -55,7 +56,7 @@ public class PersonController {
     }
 
     @DeleteMapping("/{id}")
-    public void deletePerson(@PathVariable long id) {
+    public void deletePerson(@PathVariable int id) {
         personService.deletePerson(id);
     }
 

@@ -24,7 +24,7 @@ public class ReservationService {
         return reservationRepository.findAll(pageable).getContent();
     }
 
-    public Optional<Reservation> getReservation(long id) {
+    public Optional<Reservation> getReservation(int id) {
         return reservationRepository.findById(id);
     }
 
@@ -40,7 +40,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public void deleteReservation(Long reservationId) {
+    public void deleteReservation(int reservationId) {
         reservationRepository.deleteById(reservationId);
     }
 }

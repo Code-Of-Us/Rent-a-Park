@@ -30,7 +30,7 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ReservationDto getReservation(@PathVariable long id) throws BadRequestException {
+    public ReservationDto getReservation(@PathVariable int id) throws BadRequestException {
         Optional<Reservation> reservation = reservationService.getReservation(id);
         if (reservation.isPresent()) {
             return reservationMapper.reservationToReservationDTO(reservation.get());
@@ -59,7 +59,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteReservation(@PathVariable Long id) {
+    public void deleteReservation(@PathVariable int id) {
         reservationService.deleteReservation(id);
     }
 }

@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SpotDto {
 
-    Long id;
+    Integer id;
 
     String address;
 

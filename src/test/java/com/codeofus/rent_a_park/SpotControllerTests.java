@@ -9,8 +9,10 @@ import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SpotControllerTests extends IntegrationTest {
 
     static final String SPOTS_API = "/api/v1/parking";
@@ -51,9 +54,19 @@ public class SpotControllerTests extends IntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @BeforeEach
-    public void setUp() {
+    Spot spot;
+
+    @AfterAll
+    void cleanUp() {
+        personRepository.deleteAll();
         spotRepository.deleteAll();
+    }
+
+    @BeforeEach
+    void setUp() {
+        SpotDto spotDto = createSpotDto();
+        spot = spotMapper.spotDTOtoSpot(spotDto);
+        spotRepository.save(spot);
     }
 
     private SpotDto createSpotDto() {
@@ -61,15 +74,8 @@ public class SpotControllerTests extends IntegrationTest {
         return SpotDto.builder().address(DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
     }
 
-    private Spot createAndSaveSpotEntity() {
-        SpotDto spotDto = createSpotDto();
-        return spotRepository.save(spotMapper.spotDTOtoSpot(spotDto));
-    }
-
     @Test
     public void testGetAllSpots() throws Exception {
-        createAndSaveSpotEntity();
-
         mockMvc.perform(get(SPOTS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -78,7 +84,6 @@ public class SpotControllerTests extends IntegrationTest {
 
     @Test
     public void testGetASpot() throws Exception {
-        Spot spot = createAndSaveSpotEntity();
         mockMvc.perform(get(SPOTS_API + "/{id}", spot.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -103,15 +108,13 @@ public class SpotControllerTests extends IntegrationTest {
     }
 
     @Test
-    public void testDeleteSpot() throws Exception {
-        Spot spot = createAndSaveSpotEntity();
+    public void testDeleteParking() throws Exception {
         mockMvc.perform(delete(SPOTS_API + "/{id}", spot.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testUpdateSpot() throws Exception {
-        Spot spot = createAndSaveSpotEntity();
         Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
         SpotDto updatedSpotDto = SpotDto.builder().id(spot.getId()).address(UPDATED_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
 

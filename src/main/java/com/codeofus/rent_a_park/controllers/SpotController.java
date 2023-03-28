@@ -29,7 +29,7 @@ public class SpotController {
     }
 
     @GetMapping("/{id}")
-    public SpotDto getSpot(@PathVariable long id) throws BadRequestException {
+    public SpotDto getSpot(@PathVariable int id) throws BadRequestException {
         Spot spot = spotService.getSpot(id);
         if (spot != null) {
             return spotMapper.spotToSpotDTO(spot);
@@ -51,7 +51,7 @@ public class SpotController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteParkingSpot(@PathVariable long id) {
+    public void deleteParkingSpot(@PathVariable int id) {
         spotService.deleteSpot(id);
     }
 
