@@ -5,7 +5,10 @@ import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -20,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PersonControllerTests extends IntegrationTest {
 
     static final String PERSONS_API = "/api/v1/persons";
@@ -41,17 +45,26 @@ class PersonControllerTests extends IntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    Person person;
+
+    @AfterAll
+    void cleanUp() {
+        personRepository.deleteAll();
+    }
+
+    @BeforeEach
+    void setUp() {
+        PersonDto personDto = createPersonDto();
+        person = mapper.toPerson(personDto);
+        personRepository.save(person);
+    }
+
     private PersonDto createPersonDto() {
         return PersonDto.builder()
                 .firstName(DEFAULT_FIRSTNAME)
                 .lastName(DEFAULT_LASTNAME)
                 .registration(DEFAULT_REGISTRATION)
                 .build();
-    }
-
-    private Person createAndSavePersonEntity() {
-        PersonDto personDto = createPersonDto();
-        return personRepository.save(mapper.toPerson(personDto));
     }
 
     @Test
@@ -84,15 +97,12 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     public void deletePerson() throws Exception {
-        Person person = createAndSavePersonEntity();
-
         mockMvc.perform(delete(PERSONS_API + "/{id}", person.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
     void updatePerson() throws Exception {
-        Person person = createAndSavePersonEntity();
         PersonDto updatedPersonDto = PersonDto.builder().id(person.getId()).firstName(UPDATED_FIRSTNAME).build();
 
         mockMvc.perform(put(PERSONS_API)

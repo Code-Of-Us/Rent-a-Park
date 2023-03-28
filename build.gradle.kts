@@ -1,7 +1,14 @@
 plugins {
     java
+    jacoco
+
     id("org.springframework.boot") version "2.7.9"
     id("io.spring.dependency-management") version "1.1.0"
+
+}
+
+jacoco {
+    toolVersion = "0.8.8"
 }
 
 group = "com.example"
@@ -42,4 +49,16 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required.set(true)
+        csv.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }
