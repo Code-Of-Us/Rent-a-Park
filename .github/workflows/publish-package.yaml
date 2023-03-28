@@ -1,6 +1,6 @@
 # This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created.
 
-name: Publish github package
+name: Publish Github package
 
 on:
   release:
