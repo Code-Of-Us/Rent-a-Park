@@ -1,21 +1,6 @@
 version: "3.9"
 
 services:
-  rent-a-park:
-    image: 'ir1313/renting:latest'
-    build:
-      context: .
-    container_name: app
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      - DATASOURCE_URL=jdbc:postgresql://postgres:5432/rentapark
-      - DATASOURCE_USERNAME=postgres
-      - DATASOURCE_PASSWORD=postgres
-      - REDIS_HOST=redis
-    ports:
-      - "8080:8080"
 
   postgres:
     image: postgres:15
