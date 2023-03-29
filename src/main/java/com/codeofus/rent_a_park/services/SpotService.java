@@ -20,7 +20,7 @@ public class SpotService {
 
     SpotRepository spotRepository;
 
-    public List<Spot> getAll(Pageable pageable) {
+    public List<Spot> getAllSpots(Pageable pageable) {
         Page<Spot> pagedResult = spotRepository.findAll(pageable);
         return pagedResult.getContent();
     }
@@ -40,9 +40,9 @@ public class SpotService {
         return spotToUpdate.updateSpot(spot);
     }
 
-
     @Transactional
     public void deleteSpot(int id) {
         spotRepository.deleteById(id);
     }
+
 }

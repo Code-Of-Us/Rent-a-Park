@@ -25,8 +25,8 @@ public class ReservationController {
     ReservationMapper reservationMapper;
 
     @GetMapping
-    public List<ReservationDto> getAll(Pageable pageable) {
-        return reservationMapper.reservationToReservationDTO(reservationService.getAll(pageable));
+    public List<ReservationDto> getAllReservations(Pageable pageable) {
+        return reservationMapper.reservationToReservationDTO(reservationService.getAllReservations(pageable));
     }
 
     @GetMapping("/{id}")

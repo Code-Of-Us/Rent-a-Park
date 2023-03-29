@@ -30,11 +30,6 @@ public class PersonService {
 
     PersonMapper mapper;
 
-    @Transactional
-    public Person addNewPerson(Person person) {
-        return personRepository.save(person);
-    }
-
     @Cacheable(value = "persons")
     public List<PersonInfo> getAllPersons() {
         return mapper.personListToPersonInfoList(personRepository.findAll());

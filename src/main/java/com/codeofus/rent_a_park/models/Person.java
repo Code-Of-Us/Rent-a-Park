@@ -37,4 +37,5 @@ public class Person implements Serializable {
         this.registration = person.getRegistration();
         return this;
     }
+
 }

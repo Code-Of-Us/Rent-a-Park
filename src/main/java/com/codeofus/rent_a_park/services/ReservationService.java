@@ -20,7 +20,7 @@ public class ReservationService {
 
     ReservationRepository reservationRepository;
 
-    public List<Reservation> getAll(Pageable pageable) {
+    public List<Reservation> getAllReservations(Pageable pageable) {
         return reservationRepository.findAll(pageable).getContent();
     }
 

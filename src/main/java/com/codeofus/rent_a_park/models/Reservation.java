@@ -14,6 +14,7 @@ import java.time.ZonedDateTime;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Reservation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -37,4 +38,5 @@ public class Reservation {
         this.reservedUntil = reservation.getReservedUntil();
         return this;
     }
+
 }

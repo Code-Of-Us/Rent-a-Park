@@ -24,8 +24,8 @@ public class SpotController {
     SpotMapper spotMapper;
 
     @GetMapping
-    public List<SpotDto> getAll(Pageable pageable) {
-        return spotService.getAll(pageable).stream().map(spotMapper::spotToSpotDTO).collect(Collectors.toList());
+    public List<SpotDto> getAllSpots(Pageable pageable) {
+        return spotService.getAllSpots(pageable).stream().map(spotMapper::spotToSpotDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

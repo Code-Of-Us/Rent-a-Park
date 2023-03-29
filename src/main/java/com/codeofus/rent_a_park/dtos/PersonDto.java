@@ -11,7 +11,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PersonDto {
+
     Integer id;
+
     String firstName;
 
     String lastName;
