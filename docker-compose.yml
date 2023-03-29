@@ -1,18 +1,45 @@
 version: "3.9"
 
 services:
+  app:
+    image: 'ir1313/renting:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DATASOURCE_URL=jdbc:postgresql://postgres:5432/rentapark
+      - DATASOURCE_USERNAME=postgres
+      - DATASOURCE_PASSWORD=postgres
+      - REDIS_HOST=redis
+    ports:
+      - "8080:8080"
+
   postgres:
-    container_name: rentapark
     image: postgres:15
+    container_name: postgres
     environment:
       POSTGRES_USERNAME: "postgres"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "rentapark"
     ports:
       - "5433:5433"
+
   redis:
     image: 'bitnami/redis:latest'
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "6379:6379"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
