@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ReservationControllerTests extends IntegrationTest {
 
     static final String RESERVATIONS_API = "/api/v1/reservations";
-    static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime.parse("2023-12-03T10:15:30+01:00");
+
+    static final String ZONED_DATE_TIME_STRING = "2023-12-03T10:15:30+01:00";
+    static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime.parse(ZONED_DATE_TIME_STRING, DateTimeFormatter.ISO_DATE_TIME);
 
     @Autowired
     MockMvc mockMvc;
@@ -103,7 +106,7 @@ public class ReservationControllerTests extends IntegrationTest {
         mockMvc.perform(get(RESERVATIONS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[*].createdAt").value(hasItem(ZONED_DATE_TIME.toString())));
+                .andExpect(jsonPath("$.[*].createdAt").value(hasItem(ZONED_DATE_TIME_STRING)));
     }
 
     @Test
@@ -111,7 +114,7 @@ public class ReservationControllerTests extends IntegrationTest {
         mockMvc.perform(get(RESERVATIONS_API + "/{id}", reservation.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.createdAt").value(ZONED_DATE_TIME.toString()));
+                .andExpect(jsonPath("$.createdAt").value(ZONED_DATE_TIME_STRING));
     }
 
     @Test
