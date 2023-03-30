@@ -13,7 +13,6 @@ import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.codeofus.rent_a_park.repositories.ReservationRepository;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static org.hamcrest.Matchers.hasItem;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,11 +22,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -40,7 +40,7 @@ public class ReservationControllerTests extends IntegrationTest {
     static final String RESERVATIONS_API = "/api/v1/reservations";
 
     static final String ZONED_DATE_TIME_STRING = "2023-12-03T10:15:30+01:00";
-    static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime.parse(ZONED_DATE_TIME_STRING, DateTimeFormatter.ISO_DATE_TIME);
+    static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime.of(2023, 12, 3, 10, 15, 30, 0, ZoneId.systemDefault());
 
     @Autowired
     MockMvc mockMvc;
