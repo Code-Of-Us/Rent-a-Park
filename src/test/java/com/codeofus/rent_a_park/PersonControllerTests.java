@@ -107,11 +107,11 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     public void testDeletePerson() throws Exception {
-        int sizeBeforeAdding = personRepository.findAll().size();
+        int sizeBeforeDeleting = personRepository.findAll().size();
 
         mockMvc.perform(delete(PERSONS_API + "/{id}", person.getId()))
                 .andExpect(status().isOk());
-        assertEquals(sizeBeforeAdding - 1, personRepository.findAll().size());
+        assertEquals(sizeBeforeDeleting - 1, personRepository.findAll().size());
     }
 
     @Test
