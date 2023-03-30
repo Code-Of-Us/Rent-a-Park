@@ -67,6 +67,7 @@ public class ReservationControllerTests extends IntegrationTest {
 
     @BeforeEach
     public void setUp() {
+        reservationRepository.deleteAll();
         ReservationDto reservationDto = createReservationDto();
         reservation = reservationMapper.reservationDTOtoReservation(reservationDto);
         reservationRepository.save(reservation);

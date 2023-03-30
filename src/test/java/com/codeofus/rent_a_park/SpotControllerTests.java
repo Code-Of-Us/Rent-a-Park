@@ -64,6 +64,7 @@ public class SpotControllerTests extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
+        spotRepository.deleteAll();
         SpotDto spotDto = createSpotDto();
         spot = spotMapper.spotDTOtoSpot(spotDto);
         spotRepository.save(spot);

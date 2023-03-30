@@ -54,6 +54,7 @@ class PersonControllerTests extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
+        personRepository.deleteAll();
         PersonDto personDto = createPersonDto();
         person = personMapper.personDTOtoPerson(personDto);
         personRepository.save(person);
