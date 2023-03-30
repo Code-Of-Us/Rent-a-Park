@@ -45,6 +45,8 @@ class PersonControllerTests extends IntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    Person person;
+
     @AfterAll
     void cleanUp() {
         personRepository.deleteAll();
@@ -52,12 +54,9 @@ class PersonControllerTests extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        personRepository.deleteAll();
-    }
-
-    public Person createAndSavePersonEntity() {
         PersonDto personDto = createPersonDto();
-        return personRepository.save(personMapper.personDTOtoPerson(personDto));
+        person = personMapper.personDTOtoPerson(personDto);
+        personRepository.save(person);
     }
 
     private PersonDto createPersonDto() {
@@ -88,7 +87,6 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     public void testGetPerson() throws Exception {
-        Person person = createAndSavePersonEntity();
         mockMvc.perform(get(PERSONS_API + "/{id}", person.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -99,8 +97,6 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     public void testGetAllPersons() throws Exception {
-        createAndSavePersonEntity();
-
         mockMvc.perform(get(PERSONS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -111,7 +107,6 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     public void testDeletePerson() throws Exception {
-        Person person = createAndSavePersonEntity();
         int sizeBeforeAdding = personRepository.findAll().size();
 
         mockMvc.perform(delete(PERSONS_API + "/{id}", person.getId()))
@@ -121,7 +116,6 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     void testUpdatePerson() throws Exception {
-        Person person = createAndSavePersonEntity();
         PersonDto updatedPersonDto = PersonDto.builder().id(person.getId()).firstName(UPDATED_FIRSTNAME).build();
 
         mockMvc.perform(put(PERSONS_API)
