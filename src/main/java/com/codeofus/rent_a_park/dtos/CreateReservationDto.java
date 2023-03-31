@@ -10,13 +10,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ReservationDto {
+public class CreateReservationDto {
 
-    Integer id;
+    Integer personId;
 
-    PersonDto person;
-
-    SpotDto spot;
+    Integer spotId;
 
     LocalDateTime createdAt;
 

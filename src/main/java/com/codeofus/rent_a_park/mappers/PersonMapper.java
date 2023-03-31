@@ -19,13 +19,7 @@ public interface PersonMapper {
     @Mapping(target = "registration", source = "registration")
     Person personDTOtoPerson(PersonDto personDto);
 
-    List<PersonDto> personToPersonDTO(List<Person> persons);
-
-    List<Person> personDTOtoPerson(List<PersonDto> personDtos);
-
     PersonDto personInfoToPersonDto(PersonInfo personInfo);
-
-    List<PersonDto> personInfoListToPersonDtoList(List<PersonInfo> personInfo);
 
     PersonInfo personToPersonInfo(Person person);
 

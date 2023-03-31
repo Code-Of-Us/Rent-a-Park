@@ -4,7 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -27,9 +27,9 @@ public class Reservation {
     @JoinColumn(name = "spot_id")
     Spot spot;
 
-    ZonedDateTime createdAt;
-    ZonedDateTime reservedFrom;
-    ZonedDateTime reservedUntil;
+    LocalDateTime createdAt;
+    LocalDateTime reservedFrom;
+    LocalDateTime reservedUntil;
 
     public Reservation updateReservation(Reservation reservation) {
         this.person = reservation.getPerson();

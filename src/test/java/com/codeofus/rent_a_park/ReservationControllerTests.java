@@ -1,5 +1,6 @@
 package com.codeofus.rent_a_park;
 
+import com.codeofus.rent_a_park.dtos.CreateReservationDto;
 import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.dtos.ReservationDto;
 import com.codeofus.rent_a_park.dtos.SpotDto;
@@ -22,11 +23,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.codeofus.rent_a_park.PersonControllerTests.UPDATED_FIRSTNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,8 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ReservationControllerTests extends IntegrationTest {
 
     static final String RESERVATIONS_API = "/api/v1/reservations";
-    static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime.of(2023, 12, 3, 10, 15, 30, 0, ZoneId.systemDefault());
-    static final String ZONED_DATE_TIME_STRING = ZONED_DATE_TIME.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.of(2023, 12, 3, 10, 15);
+    static final String LOCAL_DATE_TIME_STRING = "2023-12-03T10:15:00";
 
     @Autowired
     MockMvc mockMvc;
@@ -68,9 +68,17 @@ public class ReservationControllerTests extends IntegrationTest {
 
     Reservation reservation;
 
+    Person person;
+
+    Spot spot;
+
     @BeforeEach
     public void setUp() {
         reservationRepository.deleteAll();
+
+        person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
+        spot = spotRepository.save(spotMapper.spotDTOtoSpot(SpotDto.builder().address(SpotControllerTests.DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build()));
+
         ReservationDto reservationDto = createReservationDto();
         reservation = reservationMapper.reservationDTOtoReservation(reservationDto);
         reservationRepository.save(reservation);
@@ -82,15 +90,17 @@ public class ReservationControllerTests extends IntegrationTest {
     }
 
     public ReservationDto createReservationDto() {
-        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
-        Spot spot = spotRepository.save(spotMapper.spotDTOtoSpot(SpotDto.builder().address(SpotControllerTests.DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build()));
-        return ReservationDto.builder().person(personMapper.personToPersonDTO(person)).spot(spotMapper.spotToSpotDTO(spot)).createdAt(ZONED_DATE_TIME).build();
+        return ReservationDto.builder().person(personMapper.personToPersonDTO(person)).spot(spotMapper.spotToSpotDTO(spot)).createdAt(LOCAL_DATE_TIME).build();
+    }
+
+    public CreateReservationDto createCreateReservationDto() {
+        return com.codeofus.rent_a_park.dtos.CreateReservationDto.builder().personId(person.getId()).spotId(spot.getId()).createdAt(LOCAL_DATE_TIME).build();
     }
 
     @Test
     public void testCreateReservation() throws Exception {
         int sizeBeforeAdding = reservationRepository.findAll().size();
-        ReservationDto reservationDto = createReservationDto();
+        CreateReservationDto reservationDto = createCreateReservationDto();
 
         mockMvc.perform(post(RESERVATIONS_API)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +116,7 @@ public class ReservationControllerTests extends IntegrationTest {
         mockMvc.perform(get(RESERVATIONS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[*].createdAt").value(hasItem(ZONED_DATE_TIME_STRING)));
+                .andExpect(jsonPath("$.content.[*].createdAt").value(hasItem(LOCAL_DATE_TIME_STRING)));
     }
 
     @Test
@@ -114,7 +124,7 @@ public class ReservationControllerTests extends IntegrationTest {
         mockMvc.perform(get(RESERVATIONS_API + "/{id}", reservation.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.createdAt").value(ZONED_DATE_TIME_STRING));
+                .andExpect(jsonPath("$.createdAt").value(LOCAL_DATE_TIME_STRING));
     }
 
     @Test
@@ -129,7 +139,7 @@ public class ReservationControllerTests extends IntegrationTest {
 
     @Test
     public void testUpdateReservation() throws Exception {
-        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.UPDATED_FIRSTNAME).build()));
+        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(UPDATED_FIRSTNAME).build()));
         ReservationDto updatedReservationDto = ReservationDto.builder().id(reservation.getId()).person(personMapper.personToPersonDTO(person)).build();
 
         mockMvc.perform(put(RESERVATIONS_API)
@@ -138,7 +148,7 @@ public class ReservationControllerTests extends IntegrationTest {
                 .andExpect(status().isOk());
 
         Reservation updatedReservation = reservationRepository.findById(reservation.getId()).get();
-        assertEquals(person.getFirstName(), updatedReservation.getPerson().getFirstName());
+        assertEquals(UPDATED_FIRSTNAME, updatedReservation.getPerson().getFirstName());
     }
 
 }

@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SpotControllerTests extends IntegrationTest {
 
-    static final String SPOTS_API = "/api/v1/parking";
+    static final String SPOTS_API = "/api/v1/spots";
 
     static final String DEFAULT_ADDRESS = "Address 111";
 
@@ -80,7 +80,7 @@ public class SpotControllerTests extends IntegrationTest {
         mockMvc.perform(get(SPOTS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
+                .andExpect(jsonPath("$.content.[*].address").value(hasItem(DEFAULT_ADDRESS)));
     }
 
     @Test

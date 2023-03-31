@@ -101,9 +101,9 @@ class PersonControllerTests extends IntegrationTest {
         mockMvc.perform(get(PERSONS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRSTNAME)))
-                .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LASTNAME)))
-                .andExpect(jsonPath("$.[*].registration").value(hasItem(DEFAULT_REGISTRATION)));
+                .andExpect(jsonPath("$.content.[*].firstName").value(hasItem(DEFAULT_FIRSTNAME)))
+                .andExpect(jsonPath("$.content.[*].lastName").value(hasItem(DEFAULT_LASTNAME)))
+                .andExpect(jsonPath("$.content.[*].registration").value(hasItem(DEFAULT_REGISTRATION)));
     }
 
     @Test

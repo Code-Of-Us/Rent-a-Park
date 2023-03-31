@@ -1,40 +1,41 @@
 package com.codeofus.rent_a_park.controllers;
 
 import com.codeofus.rent_a_park.dtos.SpotDto;
-import com.codeofus.rent_a_park.errors.BadRequestException;
+import com.codeofus.rent_a_park.errors.BadEntityException;
 import com.codeofus.rent_a_park.mappers.SpotMapper;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.services.SpotService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/v1/parking")
+@RequestMapping(path = "/api/v1/spots")
 public class SpotController {
 
     SpotService spotService;
     SpotMapper spotMapper;
 
     @GetMapping
-    public List<SpotDto> getAllSpots(Pageable pageable) {
-        return spotService.getAllSpots(pageable).stream().map(spotMapper::spotToSpotDTO).collect(Collectors.toList());
+    public Page<SpotDto> getAllSpots(Pageable pageable) {
+        return new PageImpl<>(spotService.getAllSpots(pageable).stream().map(spotMapper::spotToSpotDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public SpotDto getSpot(@PathVariable int id) throws BadRequestException {
+    public SpotDto getSpot(@PathVariable int id) throws BadEntityException {
         Spot spot = spotService.getSpot(id);
         if (spot != null) {
             return spotMapper.spotToSpotDTO(spot);
         } else {
-            throw new BadRequestException("Spot does not exist", "spots", "does-not-exist");
+            throw new BadEntityException("Spot does not exist", "spots", "does-not-exist");
         }
     }
 

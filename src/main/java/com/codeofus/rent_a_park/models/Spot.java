@@ -29,9 +29,6 @@ public class Spot implements Serializable {
     @JoinColumn(name = "renter_id", nullable = false)
     Person renter;
 
-    @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Reservation> reservation = new ArrayList<>();
-
     public Spot updateSpot(Spot spot) {
         this.address = spot.getAddress();
         this.zone = spot.getZone();

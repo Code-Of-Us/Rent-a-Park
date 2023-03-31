@@ -1,6 +1,7 @@
 package com.codeofus.rent_a_park.services;
 
 import com.codeofus.rent_a_park.dtos.PersonInfo;
+import com.codeofus.rent_a_park.errors.BadEntityException;
 import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -41,8 +41,9 @@ public class PersonService {
         return mapper.personListToPersonInfoList(pagedResult.getContent());
     }
 
-    public Optional<Person> getPerson(int id) {
-        return personRepository.findById(id);
+    public Person getPerson(int id) {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new BadEntityException("Person does not exist", "persons", "does-not-exist"));
     }
 
     @Transactional

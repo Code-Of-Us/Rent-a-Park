@@ -1,5 +1,6 @@
 package com.codeofus.rent_a_park.services;
 
+import com.codeofus.rent_a_park.errors.BadEntityException;
 import com.codeofus.rent_a_park.models.Reservation;
 import com.codeofus.rent_a_park.repositories.ReservationRepository;
 import lombok.AccessLevel;
@@ -24,8 +25,9 @@ public class ReservationService {
         return reservationRepository.findAll(pageable).getContent();
     }
 
-    public Optional<Reservation> getReservation(int id) {
-        return reservationRepository.findById(id);
+    public Reservation getReservation(int id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new BadEntityException("Reservation does not exist", "reservations", "does-not-exist"));
     }
 
     @Transactional
@@ -34,9 +36,12 @@ public class ReservationService {
     }
 
     @Transactional
-    public Optional<Reservation> updateReservation(Reservation reservation) {
+    public Reservation updateReservation(Reservation reservation) {
         Optional<Reservation> reservationToUpdate = reservationRepository.findById(reservation.getId());
-        return reservationToUpdate.map(r -> r.updateReservation(reservation));
+        if (reservationToUpdate.isEmpty()) {
+            throw new BadEntityException("Reservation does not exist", "reservations", "id-does-not-exist");
+        }
+        return reservationToUpdate.get().updateReservation(reservation);
     }
 
     @Transactional
