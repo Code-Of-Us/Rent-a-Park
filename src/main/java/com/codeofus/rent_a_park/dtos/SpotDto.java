@@ -14,7 +14,7 @@ public class SpotDto {
 
     String address;
 
-    String zone;
+    String parkingZone;
 
     PersonDto renter;
 

@@ -5,8 +5,6 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -23,7 +21,7 @@ public class Spot implements Serializable {
 
     String address;
 
-    String zone;
+    String parkingZone;
 
     @ManyToOne
     @JoinColumn(name = "renter_id", nullable = false)
@@ -31,7 +29,7 @@ public class Spot implements Serializable {
 
     public Spot updateSpot(Spot spot) {
         this.address = spot.getAddress();
-        this.zone = spot.getZone();
+        this.parkingZone = spot.getParkingZone();
         this.renter = spot.getRenter();
         return this;
     }
