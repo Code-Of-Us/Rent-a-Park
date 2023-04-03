@@ -12,7 +12,7 @@ public interface SpotMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "address", source = "address")
-    @Mapping(target = "zone", source = "zone")
+    @Mapping(target = "parkingZone", source = "parkingZone")
     @Mapping(target = "renter", source = "renter")
     Spot spotDTOtoSpot(SpotDto spotDto);
 }

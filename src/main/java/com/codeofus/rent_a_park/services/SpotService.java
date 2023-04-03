@@ -20,9 +20,8 @@ public class SpotService {
 
     SpotRepository spotRepository;
 
-    public List<Spot> getAllSpots(Pageable pageable) {
-        Page<Spot> pagedResult = spotRepository.findAll(pageable);
-        return pagedResult.getContent();
+    public Page<Spot> getAllSpots(Pageable pageable) {
+        return spotRepository.findAll(pageable);
     }
 
     public Spot getSpot(int id) {

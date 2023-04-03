@@ -36,9 +36,9 @@ public class PersonService {
     }
 
     @Cacheable(value = "persons", key = "#pageable")
-    public List<PersonInfo> getAllPersons(Pageable pageable) {
+    public Page<PersonInfo> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
-        return mapper.personListToPersonInfoList(pagedResult.getContent());
+        return pagedResult.map(mapper::personToPersonInfo);
     }
 
     public Person getPerson(int id) {

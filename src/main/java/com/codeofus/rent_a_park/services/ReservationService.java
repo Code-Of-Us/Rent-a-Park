@@ -6,11 +6,11 @@ import com.codeofus.rent_a_park.repositories.ReservationRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -21,8 +21,8 @@ public class ReservationService {
 
     ReservationRepository reservationRepository;
 
-    public List<Reservation> getAllReservations(Pageable pageable) {
-        return reservationRepository.findAll(pageable).getContent();
+    public Page<Reservation> getAllReservations(Pageable pageable) {
+        return reservationRepository.findAll(pageable);
     }
 
     public Reservation getReservation(int id) {

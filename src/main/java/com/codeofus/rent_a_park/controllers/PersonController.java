@@ -9,11 +9,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -26,7 +23,7 @@ public class PersonController {
 
     @GetMapping
     public Page<PersonDto> getAllPersons(Pageable pageable) {
-        return new PageImpl<>(personService.getAllPersons(pageable).stream().map(personMapper::personInfoToPersonDto).collect(Collectors.toList()));
+        return personService.getAllPersons(pageable).map(personMapper::personInfoToPersonDto);
     }
 
     @GetMapping("/{id}")

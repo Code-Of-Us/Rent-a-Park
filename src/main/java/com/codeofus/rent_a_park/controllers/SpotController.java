@@ -9,11 +9,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -26,7 +23,7 @@ public class SpotController {
 
     @GetMapping
     public Page<SpotDto> getAllSpots(Pageable pageable) {
-        return new PageImpl<>(spotService.getAllSpots(pageable).stream().map(spotMapper::spotToSpotDTO).collect(Collectors.toList()));
+        return spotService.getAllSpots(pageable).map(spotMapper::spotToSpotDTO);
     }
 
     @GetMapping("/{id}")
