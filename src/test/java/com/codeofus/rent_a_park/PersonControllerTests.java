@@ -1,7 +1,7 @@
 package com.codeofus.rent_a_park;
 
-import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.PersonDto;
+import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +40,7 @@ class PersonControllerTests extends IntegrationTest {
     PersonRepository personRepository;
 
     @Autowired
-    ParkingMapper mapper;
+    PersonMapper personMapper;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -54,8 +54,9 @@ class PersonControllerTests extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
+        personRepository.deleteAll();
         PersonDto personDto = createPersonDto();
-        person = mapper.toPerson(personDto);
+        person = personMapper.personDTOtoPerson(personDto);
         personRepository.save(person);
     }
 
@@ -68,7 +69,7 @@ class PersonControllerTests extends IntegrationTest {
     }
 
     @Test
-    void addNewPerson() throws Exception {
+    void testCreatePerson() throws Exception {
         int sizeBeforeAdding = personRepository.findAll().size();
 
         PersonDto personDto = createPersonDto();
@@ -86,23 +87,36 @@ class PersonControllerTests extends IntegrationTest {
     }
 
     @Test
-    public void getAllPersons() throws Exception {
+    public void testGetPerson() throws Exception {
+        mockMvc.perform(get(PERSONS_API + "/{id}", person.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRSTNAME))
+                .andExpect(jsonPath("$.lastName").value(DEFAULT_LASTNAME))
+                .andExpect(jsonPath("$.registration").value(DEFAULT_REGISTRATION));
+    }
+
+    @Test
+    public void testGetAllPersons() throws Exception {
         mockMvc.perform(get(PERSONS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRSTNAME)))
-                .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LASTNAME)))
-                .andExpect(jsonPath("$.[*].registration").value(hasItem(DEFAULT_REGISTRATION)));
+                .andExpect(jsonPath("$.content.[*].firstName").value(hasItem(DEFAULT_FIRSTNAME)))
+                .andExpect(jsonPath("$.content.[*].lastName").value(hasItem(DEFAULT_LASTNAME)))
+                .andExpect(jsonPath("$.content.[*].registration").value(hasItem(DEFAULT_REGISTRATION)));
     }
 
     @Test
-    public void deletePerson() throws Exception {
+    public void testDeletePerson() throws Exception {
+        int sizeBeforeDeleting = personRepository.findAll().size();
+
         mockMvc.perform(delete(PERSONS_API + "/{id}", person.getId()))
                 .andExpect(status().isOk());
+        assertEquals(sizeBeforeDeleting - 1, personRepository.findAll().size());
     }
 
     @Test
-    void updatePerson() throws Exception {
+    void testUpdatePerson() throws Exception {
         PersonDto updatedPersonDto = PersonDto.builder().id(person.getId()).firstName(UPDATED_FIRSTNAME).build();
 
         mockMvc.perform(put(PERSONS_API)

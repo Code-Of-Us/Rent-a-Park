@@ -3,21 +3,22 @@ package com.codeofus.rent_a_park.dtos;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PersonInfo implements Serializable {
+public class CreateReservationDto {
 
-    Integer id;
+    Integer personId;
 
-    String firstName;
+    Integer spotId;
 
-    String lastName;
+    LocalDateTime createdAt;
 
-    String registration;
+    LocalDateTime reservedFrom;
 
+    LocalDateTime reservedUntil;
 }

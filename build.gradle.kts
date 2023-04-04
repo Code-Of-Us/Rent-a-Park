@@ -62,6 +62,7 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
 
+
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}Final")

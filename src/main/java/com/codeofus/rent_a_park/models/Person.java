@@ -13,7 +13,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"rentedSpots", "parkingSpots"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Person implements Serializable {
 
@@ -25,16 +24,11 @@ public class Person implements Serializable {
     String lastName;
     String registration;
 
-    @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Spot> rentedSpots = new ArrayList<>();
-
-    @OneToMany(mappedBy = "parker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Spot> parkingSpots = new ArrayList<>();
-
     public Person updatePerson(Person person) {
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
         this.registration = person.getRegistration();
         return this;
     }
+
 }
