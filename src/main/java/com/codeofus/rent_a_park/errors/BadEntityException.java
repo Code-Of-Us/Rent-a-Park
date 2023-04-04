@@ -1,16 +1,19 @@
 package com.codeofus.rent_a_park.errors;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Builder
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class BadRequestException extends RuntimeException {
+public class BadEntityException extends RuntimeException {
 
     String message;
 
     String entityName;
 
     String errorKey;
+
 }

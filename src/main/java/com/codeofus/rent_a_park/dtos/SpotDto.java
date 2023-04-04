@@ -3,8 +3,6 @@ package com.codeofus.rent_a_park.dtos;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,10 +11,11 @@ import java.time.LocalDateTime;
 public class SpotDto {
 
     Integer id;
+
     String address;
-    LocalDateTime availability;
-    Integer capacity;
+
+    String parkingZone;
+
     PersonDto renter;
-    PersonDto parker;
 
 }
