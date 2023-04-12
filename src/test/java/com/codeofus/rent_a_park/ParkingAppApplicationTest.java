@@ -4,14 +4,12 @@ import com.netflix.discovery.EurekaClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Lazy;
 
 import java.time.Duration;
 
 import static org.awaitility.Awaitility.await;
 
-@SpringBootTest
 public class ParkingAppApplicationTest extends IntegrationTest {
     @Value("${spring.application.name}")
     private String applicationName;
