@@ -1,9 +1,10 @@
-package com.codeofus.rent_a_park;
+package com.codeofus.rent_a_park.controllers;
 
-import com.codeofus.rent_a_park.dtos.CreateReservationDto;
-import com.codeofus.rent_a_park.dtos.PersonDto;
-import com.codeofus.rent_a_park.dtos.ReservationDto;
-import com.codeofus.rent_a_park.dtos.SpotDto;
+import com.codeofus.rent_a_park.IntegrationTest;
+import com.codeofus.rent_a_park.dtos.CreateReservationDTO;
+import com.codeofus.rent_a_park.dtos.PersonDTO;
+import com.codeofus.rent_a_park.dtos.ReservationDTO;
+import com.codeofus.rent_a_park.dtos.SpotDTO;
 import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.mappers.ReservationMapper;
 import com.codeofus.rent_a_park.mappers.SpotMapper;
@@ -26,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.codeofus.rent_a_park.PersonControllerTests.UPDATED_FIRSTNAME;
+import static com.codeofus.rent_a_park.controllers.PersonControllerTests.UPDATED_FIRSTNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,10 +77,10 @@ public class ReservationControllerTests extends IntegrationTest {
     public void setUp() {
         reservationRepository.deleteAll();
 
-        person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
-        spot = spotRepository.save(spotMapper.spotDTOtoSpot(SpotDto.builder().address(SpotControllerTests.DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build()));
+        person = personRepository.save(personMapper.personDTOtoPerson(PersonDTO.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
+        spot = spotRepository.save(spotMapper.spotDTOtoSpot(SpotDTO.builder().address(SpotControllerTests.DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build()));
 
-        ReservationDto reservationDto = createReservationDto();
+        ReservationDTO reservationDto = createReservationDto();
         reservation = reservationMapper.reservationDTOtoReservation(reservationDto);
         reservationRepository.save(reservation);
     }
@@ -89,18 +90,18 @@ public class ReservationControllerTests extends IntegrationTest {
         reservationRepository.deleteAll();
     }
 
-    public ReservationDto createReservationDto() {
-        return ReservationDto.builder().person(personMapper.personToPersonDTO(person)).spot(spotMapper.spotToSpotDTO(spot)).createdAt(LOCAL_DATE_TIME).build();
+    public ReservationDTO createReservationDto() {
+        return ReservationDTO.builder().person(personMapper.personToPersonDTO(person)).spot(spotMapper.spotToSpotDTO(spot)).createdAt(LOCAL_DATE_TIME).build();
     }
 
-    public CreateReservationDto createCreateReservationDto() {
-        return com.codeofus.rent_a_park.dtos.CreateReservationDto.builder().personId(person.getId()).spotId(spot.getId()).createdAt(LOCAL_DATE_TIME).build();
+    public CreateReservationDTO createCreateReservationDto() {
+        return CreateReservationDTO.builder().personId(person.getId()).spotId(spot.getId()).createdAt(LOCAL_DATE_TIME).build();
     }
 
     @Test
     public void testCreateReservation() throws Exception {
         int sizeBeforeAdding = reservationRepository.findAll().size();
-        CreateReservationDto reservationDto = createCreateReservationDto();
+        CreateReservationDTO reservationDto = createCreateReservationDto();
 
         mockMvc.perform(post(RESERVATIONS_API)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -139,12 +140,12 @@ public class ReservationControllerTests extends IntegrationTest {
 
     @Test
     public void testUpdateReservation() throws Exception {
-        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(UPDATED_FIRSTNAME).build()));
-        ReservationDto updatedReservationDto = ReservationDto.builder().id(reservation.getId()).person(personMapper.personToPersonDTO(person)).build();
+        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDTO.builder().firstName(UPDATED_FIRSTNAME).build()));
+        ReservationDTO updatedReservationDTO = ReservationDTO.builder().id(reservation.getId()).person(personMapper.personToPersonDTO(person)).build();
 
         mockMvc.perform(put(RESERVATIONS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(updatedReservationDto)))
+                        .content(objectMapper.writeValueAsBytes(updatedReservationDTO)))
                 .andExpect(status().isOk());
 
         Reservation updatedReservation = reservationRepository.findById(reservation.getId()).get();

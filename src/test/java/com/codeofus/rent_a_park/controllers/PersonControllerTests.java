@@ -1,9 +1,12 @@
-package com.codeofus.rent_a_park;
+package com.codeofus.rent_a_park.controllers;
 
-import com.codeofus.rent_a_park.dtos.PersonDto;
+import com.codeofus.rent_a_park.IntegrationTest;
+import com.codeofus.rent_a_park.dtos.PersonDTO;
 import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
+import com.codeofus.rent_a_park.stubs.PersonDTOStub;
+import com.codeofus.rent_a_park.stubs.PersonStub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,27 +58,25 @@ class PersonControllerTests extends IntegrationTest {
     @BeforeEach
     void setUp() {
         personRepository.deleteAll();
-        PersonDto personDto = createPersonDto();
-        person = personMapper.personDTOtoPerson(personDto);
-        personRepository.save(person);
-    }
-
-    private PersonDto createPersonDto() {
-        return PersonDto.builder()
-                .firstName(DEFAULT_FIRSTNAME)
+        person = PersonStub.givenPersonStubBuilder().firstName(DEFAULT_FIRSTNAME)
                 .lastName(DEFAULT_LASTNAME)
                 .registration(DEFAULT_REGISTRATION)
                 .build();
+        personRepository.save(person);
     }
 
     @Test
     void testCreatePerson() throws Exception {
         int sizeBeforeAdding = personRepository.findAll().size();
 
-        PersonDto personDto = createPersonDto();
+        PersonDTO personDTO = PersonDTOStub.givenPersonDtoStubBuilder().firstName(DEFAULT_FIRSTNAME)
+                .lastName(DEFAULT_LASTNAME)
+                .registration(DEFAULT_REGISTRATION)
+                .build();
+
         mockMvc.perform(post(PERSONS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(personDto)))
+                        .content(objectMapper.writeValueAsBytes(personDTO)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -83,7 +84,7 @@ class PersonControllerTests extends IntegrationTest {
         assertThat(personList).hasSize(sizeBeforeAdding + 1);
         Person person = personList.get(personList.size() - 1);
         assertEquals(person.getFirstName(), DEFAULT_FIRSTNAME);
-        assertEquals(personDto.getLastName(), DEFAULT_LASTNAME);
+        assertEquals(personDTO.getLastName(), DEFAULT_LASTNAME);
     }
 
     @Test
@@ -117,11 +118,11 @@ class PersonControllerTests extends IntegrationTest {
 
     @Test
     void testUpdatePerson() throws Exception {
-        PersonDto updatedPersonDto = PersonDto.builder().id(person.getId()).firstName(UPDATED_FIRSTNAME).build();
+        PersonDTO updatedPersonDTO = PersonDTO.builder().id(person.getId()).firstName(UPDATED_FIRSTNAME).build();
 
         mockMvc.perform(put(PERSONS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(updatedPersonDto)))
+                        .content(objectMapper.writeValueAsBytes(updatedPersonDTO)))
                 .andExpect(status().isOk())
                 .andReturn();
 

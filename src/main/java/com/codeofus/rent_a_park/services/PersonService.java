@@ -1,8 +1,6 @@
 package com.codeofus.rent_a_park.services;
 
-import com.codeofus.rent_a_park.dtos.PersonInfo;
 import com.codeofus.rent_a_park.errors.BadEntityException;
-import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import lombok.AccessLevel;
@@ -28,17 +26,14 @@ public class PersonService {
 
     PersonRepository personRepository;
 
-    PersonMapper mapper;
-
     @Cacheable(value = "persons")
-    public List<PersonInfo> getAllPersons() {
-        return mapper.personListToPersonInfoList(personRepository.findAll());
+    public List<Person> getAllPersons() {
+        return personRepository.findAll();
     }
 
     @Cacheable(value = "persons", key = "#pageable")
-    public Page<PersonInfo> getAllPersons(Pageable pageable) {
-        Page<Person> pagedResult = personRepository.findAll(pageable);
-        return pagedResult.map(mapper::personToPersonInfo);
+    public Page<Person> getAllPersons(Pageable pageable) {
+        return personRepository.findAll(pageable);
     }
 
     public Person getPerson(int id) {

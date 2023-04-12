@@ -1,6 +1,6 @@
 package com.codeofus.rent_a_park.controllers;
 
-import com.codeofus.rent_a_park.dtos.SpotDto;
+import com.codeofus.rent_a_park.dtos.SpotDTO;
 import com.codeofus.rent_a_park.errors.BadEntityException;
 import com.codeofus.rent_a_park.mappers.SpotMapper;
 import com.codeofus.rent_a_park.models.Spot;
@@ -22,12 +22,12 @@ public class SpotController {
     SpotMapper spotMapper;
 
     @GetMapping
-    public Page<SpotDto> getAllSpots(Pageable pageable) {
+    public Page<SpotDTO> getAllSpots(Pageable pageable) {
         return spotService.getAllSpots(pageable).map(spotMapper::spotToSpotDTO);
     }
 
     @GetMapping("/{id}")
-    public SpotDto getSpot(@PathVariable int id) throws BadEntityException {
+    public SpotDTO getSpot(@PathVariable int id) throws BadEntityException {
         Spot spot = spotService.getSpot(id);
         if (spot != null) {
             return spotMapper.spotToSpotDTO(spot);
@@ -37,13 +37,13 @@ public class SpotController {
     }
 
     @PostMapping
-    public SpotDto createSpot(@RequestBody SpotDto spotDto) {
+    public SpotDTO createSpot(@RequestBody SpotDTO spotDto) {
         Spot spot = spotService.createSpot(spotMapper.spotDTOtoSpot(spotDto));
         return spotMapper.spotToSpotDTO(spot);
     }
 
     @PutMapping
-    public SpotDto updateSpot(@RequestBody SpotDto spotDto) {
+    public SpotDTO updateSpot(@RequestBody SpotDTO spotDto) {
         Spot spot = spotService.updateSpot(spotMapper.spotDTOtoSpot(spotDto));
         return spotMapper.spotToSpotDTO(spot);
     }

@@ -1,13 +1,17 @@
-package com.codeofus.rent_a_park;
+package com.codeofus.rent_a_park.controllers;
 
-import com.codeofus.rent_a_park.dtos.PersonDto;
-import com.codeofus.rent_a_park.dtos.SpotDto;
+import com.codeofus.rent_a_park.IntegrationTest;
+import com.codeofus.rent_a_park.dtos.PersonDTO;
+import com.codeofus.rent_a_park.dtos.SpotDTO;
 import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.mappers.SpotMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
+import com.codeofus.rent_a_park.stubs.PersonStub;
+import com.codeofus.rent_a_park.stubs.SpotDTOStub;
+import com.codeofus.rent_a_park.stubs.SpotStub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,6 +59,7 @@ public class SpotControllerTests extends IntegrationTest {
     ObjectMapper objectMapper;
 
     Spot spot;
+    Person person;
 
     @AfterAll
     void cleanUp() {
@@ -65,14 +70,9 @@ public class SpotControllerTests extends IntegrationTest {
     @BeforeEach
     void setUp() {
         spotRepository.deleteAll();
-        SpotDto spotDto = createSpotDto();
-        spot = spotMapper.spotDTOtoSpot(spotDto);
+        person = personRepository.save(PersonStub.givenPersonStub());
+        spot = SpotStub.givenSpotStubBuilder().address(DEFAULT_ADDRESS).renter(person).build();
         spotRepository.save(spot);
-    }
-
-    private SpotDto createSpotDto() {
-        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
-        return SpotDto.builder().address(DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
     }
 
     @Test
@@ -94,7 +94,7 @@ public class SpotControllerTests extends IntegrationTest {
     @Test
     public void testCreateSpot() throws Exception {
         int sizeBeforeAdding = spotRepository.findAll().size();
-        SpotDto spotDto = createSpotDto();
+        SpotDTO spotDto = SpotDTOStub.givenSpotDtoStubBuilder().address(DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
 
         mockMvc.perform(post(SPOTS_API)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -116,12 +116,12 @@ public class SpotControllerTests extends IntegrationTest {
 
     @Test
     public void testUpdateSpot() throws Exception {
-        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
-        SpotDto updatedSpotDto = SpotDto.builder().id(spot.getId()).address(UPDATED_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
+        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDTO.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
+        SpotDTO updatedSpotDTO = SpotDTO.builder().id(spot.getId()).address(UPDATED_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
 
         mockMvc.perform(put(SPOTS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(updatedSpotDto)))
+                        .content(objectMapper.writeValueAsBytes(updatedSpotDTO)))
                 .andExpect(status().isOk())
                 .andReturn();
 

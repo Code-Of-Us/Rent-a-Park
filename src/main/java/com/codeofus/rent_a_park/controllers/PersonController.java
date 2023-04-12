@@ -1,6 +1,6 @@
 package com.codeofus.rent_a_park.controllers;
 
-import com.codeofus.rent_a_park.dtos.PersonDto;
+import com.codeofus.rent_a_park.dtos.PersonDTO;
 import com.codeofus.rent_a_park.errors.BadEntityException;
 import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
@@ -22,24 +22,24 @@ public class PersonController {
     PersonMapper personMapper;
 
     @GetMapping
-    public Page<PersonDto> getAllPersons(Pageable pageable) {
-        return personService.getAllPersons(pageable).map(personMapper::personInfoToPersonDto);
+    public Page<PersonDTO> getAllPersons(Pageable pageable) {
+        return personService.getAllPersons(pageable).map(personMapper::personToPersonDTO);
     }
 
     @GetMapping("/{id}")
-    public PersonDto getPerson(@PathVariable int id) throws BadEntityException {
+    public PersonDTO getPerson(@PathVariable int id) throws BadEntityException {
         Person person = personService.getPerson(id);
         return personMapper.personToPersonDTO(person);
     }
 
     @PostMapping
-    public PersonDto createPerson(@RequestBody PersonDto personDto) throws BadEntityException {
+    public PersonDTO createPerson(@RequestBody PersonDTO personDto) throws BadEntityException {
         Person createdPerson = personService.createPerson(personMapper.personDTOtoPerson(personDto));
         return personMapper.personToPersonDTO(createdPerson);
     }
 
     @PutMapping
-    public PersonDto updatePerson(@RequestBody PersonDto personDto) {
+    public PersonDTO updatePerson(@RequestBody PersonDTO personDto) {
         Person updatedPerson = personService.updatePerson(personMapper.personDTOtoPerson(personDto));
         return personMapper.personToPersonDTO(updatedPerson);
     }
