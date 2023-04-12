@@ -1,14 +1,18 @@
 package com.codeofus.rent_a_park;
 
-import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.PersonDto;
 import com.codeofus.rent_a_park.dtos.SpotDto;
+import com.codeofus.rent_a_park.mappers.PersonMapper;
+import com.codeofus.rent_a_park.mappers.SpotMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.codeofus.rent_a_park.repositories.SpotRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -19,17 +23,18 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SpotControllerTests extends IntegrationTest {
 
-    static final String SPOTS_API = "/api/v1/parking";
+    static final String SPOTS_API = "/api/v1/spots";
 
     static final String DEFAULT_ADDRESS = "Address 111";
-    static final Integer DEFAULT_CAPACITY = 1;
+
+    static final String UPDATED_ADDRESS = "Address 10";
 
     @Autowired
     MockMvc mockMvc;
@@ -41,34 +46,53 @@ public class SpotControllerTests extends IntegrationTest {
     PersonRepository personRepository;
 
     @Autowired
-    ParkingMapper mapper;
+    SpotMapper spotMapper;
+
+    @Autowired
+    PersonMapper personMapper;
 
     @Autowired
     ObjectMapper objectMapper;
 
-    private SpotDto createSpotDto() {
-        Person person = personRepository.save(mapper.toPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
-        return SpotDto.builder().address(DEFAULT_ADDRESS).capacity(DEFAULT_CAPACITY).renter(mapper.personToDto(person)).build();
+    Spot spot;
+
+    @AfterAll
+    void cleanUp() {
+        personRepository.deleteAll();
+        spotRepository.deleteAll();
     }
 
-    private Spot createSpotEntity() {
+    @BeforeEach
+    void setUp() {
+        spotRepository.deleteAll();
         SpotDto spotDto = createSpotDto();
-        return spotRepository.save(mapper.toSpot(spotDto));
+        spot = spotMapper.spotDTOtoSpot(spotDto);
+        spotRepository.save(spot);
+    }
+
+    private SpotDto createSpotDto() {
+        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
+        return SpotDto.builder().address(DEFAULT_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
     }
 
     @Test
     public void testGetAllSpots() throws Exception {
-        createSpotEntity();
-
         mockMvc.perform(get(SPOTS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[*].capacity").value(hasItem(DEFAULT_CAPACITY)))
-                .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
+                .andExpect(jsonPath("$.content.[*].address").value(hasItem(DEFAULT_ADDRESS)));
     }
 
     @Test
-    public void testAddNewParkingSpot() throws Exception {
+    public void testGetASpot() throws Exception {
+        mockMvc.perform(get(SPOTS_API + "/{id}", spot.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.address").value((DEFAULT_ADDRESS)));
+    }
+
+    @Test
+    public void testCreateSpot() throws Exception {
         int sizeBeforeAdding = spotRepository.findAll().size();
         SpotDto spotDto = createSpotDto();
 
@@ -81,43 +105,27 @@ public class SpotControllerTests extends IntegrationTest {
         List<Spot> spotList = spotRepository.findAll();
         assertThat(spotList).hasSize(sizeBeforeAdding + 1);
         Spot spot = spotList.get(spotList.size() - 1);
-        assertEquals(spot.getCapacity(), DEFAULT_CAPACITY);
         assertEquals(spot.getAddress(), DEFAULT_ADDRESS);
     }
 
     @Test
     public void testDeleteParking() throws Exception {
-        Spot spot = createSpotEntity();
         mockMvc.perform(delete(SPOTS_API + "/{id}", spot.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void testCancelReservation() throws Exception {
-        SpotDto spotDto = createSpotDto();
-        Person parker = personRepository.save(Person.builder().firstName("Parker").build());
-        spotDto.setParker(mapper.personToDto(parker));
-        Spot spotEntity = spotRepository.save(mapper.toSpot(spotDto));
-        mockMvc.perform(post(SPOTS_API + "/{id}/cancel/{parkerId}", spotEntity.getId(), spotEntity.getParker().getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(spotEntity)))
-                .andExpect(status().isOk());
-        List<Spot> spotList = spotRepository.findAll();
-        Spot spot = spotList.get(spotList.size() - 1);
-        assertNull(spot.getParker());
-    }
+    public void testUpdateSpot() throws Exception {
+        Person person = personRepository.save(personMapper.personDTOtoPerson(PersonDto.builder().firstName(PersonControllerTests.DEFAULT_FIRSTNAME).build()));
+        SpotDto updatedSpotDto = SpotDto.builder().id(spot.getId()).address(UPDATED_ADDRESS).renter(personMapper.personToPersonDTO(person)).build();
 
-    @Test
-    public void testReserveParking() throws Exception {
-        Person parker = personRepository.save(Person.builder().firstName("Parker").build());
-        Spot spotEntity = createSpotEntity();
-        mockMvc.perform(post(SPOTS_API + "/{id}/reserve/{parkerId}", spotEntity.getId(), parker.getId())
+        mockMvc.perform(put(SPOTS_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(spotEntity)))
-                .andExpect(status().isOk());
-        List<Spot> spotList = spotRepository.findAll();
-        Spot spot = spotList.get(spotList.size() - 1);
-        assertEquals("Parker", spot.getParker().getFirstName());
-    }
+                        .content(objectMapper.writeValueAsBytes(updatedSpotDto)))
+                .andExpect(status().isOk())
+                .andReturn();
 
+        Spot updatedSpot = spotRepository.findById(spot.getId()).get();
+        assertEquals(UPDATED_ADDRESS, updatedSpot.getAddress());
+    }
 }

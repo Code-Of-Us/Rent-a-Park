@@ -1,23 +1,26 @@
 package com.codeofus.rent_a_park.dtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class PersonDto {
+public class ReservationDto {
 
     Integer id;
 
-    String firstName;
+    PersonDto person;
 
-    String lastName;
+    SpotDto spot;
 
-    String registration;
+    LocalDateTime createdAt;
 
+    LocalDateTime reservedFrom;
+
+    LocalDateTime reservedUntil;
 }

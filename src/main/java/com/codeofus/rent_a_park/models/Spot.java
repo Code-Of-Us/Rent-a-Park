@@ -5,7 +5,6 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -21,15 +20,18 @@ public class Spot implements Serializable {
     Integer id;
 
     String address;
-    LocalDateTime availability;
-    Integer capacity;
+
+    String parkingZone;
 
     @ManyToOne
     @JoinColumn(name = "renter_id", nullable = false)
     Person renter;
 
-    @ManyToOne
-    @JoinColumn(name = "parker_id")
-    Person parker;
+    public Spot updateSpot(Spot spot) {
+        this.address = spot.getAddress();
+        this.parkingZone = spot.getParkingZone();
+        this.renter = spot.getRenter();
+        return this;
+    }
 
 }

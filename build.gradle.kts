@@ -1,7 +1,14 @@
 plugins {
     java
+    jacoco
+
     id("org.springframework.boot") version "2.6.0"
     id("io.spring.dependency-management") version "1.1.0"
+
+}
+
+jacoco {
+    toolVersion = "0.8.8"
 }
 
 group = "com.example"
@@ -30,6 +37,8 @@ dependencies {
     implementation("org.springframework:spring-jdbc:$jdbcVersion")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -52,4 +61,16 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required.set(true)
+        csv.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }

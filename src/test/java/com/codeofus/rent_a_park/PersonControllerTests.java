@@ -1,11 +1,14 @@
 package com.codeofus.rent_a_park;
 
-import com.codeofus.rent_a_park.dtos.ParkingMapper;
 import com.codeofus.rent_a_park.dtos.PersonDto;
+import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -20,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PersonControllerTests extends IntegrationTest {
 
     static final String PERSONS_API = "/api/v1/persons";
@@ -36,10 +40,25 @@ class PersonControllerTests extends IntegrationTest {
     PersonRepository personRepository;
 
     @Autowired
-    ParkingMapper mapper;
+    PersonMapper personMapper;
 
     @Autowired
     ObjectMapper objectMapper;
+
+    Person person;
+
+    @AfterAll
+    void cleanUp() {
+        personRepository.deleteAll();
+    }
+
+    @BeforeEach
+    void setUp() {
+        personRepository.deleteAll();
+        PersonDto personDto = createPersonDto();
+        person = personMapper.personDTOtoPerson(personDto);
+        personRepository.save(person);
+    }
 
     private PersonDto createPersonDto() {
         return PersonDto.builder()
@@ -49,13 +68,8 @@ class PersonControllerTests extends IntegrationTest {
                 .build();
     }
 
-    private Person createAndSavePersonEntity() {
-        PersonDto personDto = createPersonDto();
-        return personRepository.save(mapper.toPerson(personDto));
-    }
-
     @Test
-    void addNewPerson() throws Exception {
+    void testCreatePerson() throws Exception {
         int sizeBeforeAdding = personRepository.findAll().size();
 
         PersonDto personDto = createPersonDto();
@@ -73,26 +87,36 @@ class PersonControllerTests extends IntegrationTest {
     }
 
     @Test
-    public void getAllPersons() throws Exception {
+    public void testGetPerson() throws Exception {
+        mockMvc.perform(get(PERSONS_API + "/{id}", person.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRSTNAME))
+                .andExpect(jsonPath("$.lastName").value(DEFAULT_LASTNAME))
+                .andExpect(jsonPath("$.registration").value(DEFAULT_REGISTRATION));
+    }
+
+    @Test
+    public void testGetAllPersons() throws Exception {
         mockMvc.perform(get(PERSONS_API))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRSTNAME)))
-                .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LASTNAME)))
-                .andExpect(jsonPath("$.[*].registration").value(hasItem(DEFAULT_REGISTRATION)));
+                .andExpect(jsonPath("$.content.[*].firstName").value(hasItem(DEFAULT_FIRSTNAME)))
+                .andExpect(jsonPath("$.content.[*].lastName").value(hasItem(DEFAULT_LASTNAME)))
+                .andExpect(jsonPath("$.content.[*].registration").value(hasItem(DEFAULT_REGISTRATION)));
     }
 
     @Test
-    public void deletePerson() throws Exception {
-        Person person = createAndSavePersonEntity();
+    public void testDeletePerson() throws Exception {
+        int sizeBeforeDeleting = personRepository.findAll().size();
 
         mockMvc.perform(delete(PERSONS_API + "/{id}", person.getId()))
                 .andExpect(status().isOk());
+        assertEquals(sizeBeforeDeleting - 1, personRepository.findAll().size());
     }
 
     @Test
-    void updatePerson() throws Exception {
-        Person person = createAndSavePersonEntity();
+    void testUpdatePerson() throws Exception {
         PersonDto updatedPersonDto = PersonDto.builder().id(person.getId()).firstName(UPDATED_FIRSTNAME).build();
 
         mockMvc.perform(put(PERSONS_API)

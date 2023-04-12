@@ -1,12 +1,13 @@
 package com.codeofus.rent_a_park.services;
 
+import com.codeofus.rent_a_park.dtos.PersonInfo;
+import com.codeofus.rent_a_park.errors.BadEntityException;
+import com.codeofus.rent_a_park.mappers.PersonMapper;
 import com.codeofus.rent_a_park.models.Person;
-import com.codeofus.rent_a_park.models.Spot;
 import com.codeofus.rent_a_park.repositories.PersonRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.Hibernate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,29 +28,28 @@ public class PersonService {
 
     PersonRepository personRepository;
 
-    @Transactional
-    public Person addNewPerson(Person person) {
-        return personRepository.save(person);
-    }
+    PersonMapper mapper;
 
     @Cacheable(value = "persons")
-    public List<Person> getAllPersons() {
-        List<Person> persons = personRepository.findAll();
-        persons.forEach(p -> {
-            Hibernate.initialize(p.getParkingSpots());
-            Hibernate.initialize(p.getRentedSpots());
-        });
-        return persons;
+    public List<PersonInfo> getAllPersons() {
+        return mapper.personListToPersonInfoList(personRepository.findAll());
     }
 
     @Cacheable(value = "persons", key = "#pageable")
-    public List<Person> getAllPersons(Pageable pageable) {
+    public Page<PersonInfo> getAllPersons(Pageable pageable) {
         Page<Person> pagedResult = personRepository.findAll(pageable);
-        pagedResult.forEach(p -> {
-            Hibernate.initialize(p.getParkingSpots());
-            Hibernate.initialize(p.getRentedSpots());
-        });
-        return pagedResult.getContent();
+        return pagedResult.map(mapper::personToPersonInfo);
+    }
+
+    public Person getPerson(int id) {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new BadEntityException("Person does not exist", "persons", "does-not-exist"));
+    }
+
+    @Transactional
+    @CacheEvict(value = "persons", allEntries = true)
+    public Person createPerson(Person person) {
+        return personRepository.save(person);
     }
 
     @Transactional
@@ -65,33 +65,6 @@ public class PersonService {
     @Caching(evict = {@CacheEvict(value = "person", key = "#personId"), @CacheEvict(value = "persons", allEntries = true)})
     public void deletePerson(Integer personId) {
         personRepository.deleteById(personId);
-    }
-
-    @Transactional
-    public void reserveParkingSpot(Spot spot, Person parker) {
-        List<Spot> parkingSpots = parker.getParkingSpots();
-        parkingSpots.add(spot);
-        if (personRepository.findById(parker.getId()).isPresent()) {
-            personRepository.delete(parker);
-        }
-        parker.setParkingSpots(parkingSpots);
-        personRepository.save(parker);
-    }
-
-    @Transactional
-    public void addParkingSpot(Spot spot, Person renter) {
-        List<Spot> rentedSpots = renter.getRentedSpots();
-        rentedSpots.add(spot);
-        renter.setRentedSpots(rentedSpots);
-        personRepository.save(renter);
-    }
-
-    @Transactional
-    public void cancelReservation(Spot spot, Person parker) {
-        List<Spot> parkingSpots = parker.getParkingSpots();
-        parkingSpots.remove(spot);
-        parker.setParkingSpots(parkingSpots);
-        personRepository.save(parker);
     }
 
 }
