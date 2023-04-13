@@ -2,7 +2,7 @@ plugins {
     java
     jacoco
 
-    id("org.springframework.boot") version "2.6.0"
+    id("org.springframework.boot") version "2.7.6"
     id("io.spring.dependency-management") version "1.1.0"
 
 }
@@ -20,7 +20,7 @@ var jdbcVersion = "6.0.4"
 var lombokVersion = "1.18.22"
 var testContainersVersion = "1.17.6"
 var jupiterVersion = "5.9.0"
-val springCloudVersion = "2021.0.0"
+val springCloudVersion = "2021.0.3"
 
 repositories {
     mavenCentral()
