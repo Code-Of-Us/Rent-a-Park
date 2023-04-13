@@ -1,10 +1,8 @@
 package com.codeofus.rent_a_park;
 
-import com.netflix.discovery.EurekaClient;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 
@@ -12,10 +10,12 @@ import static org.awaitility.Awaitility.await;
 
 public class ParkingAppApplicationTest extends IntegrationTest {
     @Value("${spring.application.name}")
-    private String applicationName;
-    @Lazy
-    @Autowired
-    private EurekaClient eurekaClient;
+    String applicationName;
+
+    @Value("${eureka.client.service-url.defaultZone}")
+    String eurekaUrl;
+
+    RestTemplate restTemplate = new RestTemplate();
 
     @Test
     public void checkIfServiceRegistered() {
@@ -23,7 +23,12 @@ public class ParkingAppApplicationTest extends IntegrationTest {
                 .atMost(Duration.ofMinutes(2))
                 .with()
                 .pollInterval(Duration.ofSeconds(3))
-                .until(() -> eurekaClient.getApplication(applicationName) != null);
+                .until(() -> {
+                    String url = eurekaUrl + "/apps/" + applicationName;
+                    String response = restTemplate.getForObject(url, String.class);
+                    assert response != null;
+                    return response.contains(applicationName);
+                });
     }
 }
 

@@ -9,9 +9,9 @@ import org.testcontainers.utility.DockerImageName;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@FieldDefaults(level = PRIVATE, makeFinal = true)
 @Testcontainers
 @SpringBootTest
+@FieldDefaults(level = PRIVATE, makeFinal = true)
 public class IntegrationTest {
 
     static String REDIS_IMAGE = "redis:5.0.3-alpine";
