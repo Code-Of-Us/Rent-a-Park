@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-web:3.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-web-services")
     implementation("org.projectlombok:lombok:$lombokVersion")
     implementation("org.mapstruct:mapstruct:${mapstructVersion}Final")
@@ -37,6 +37,7 @@ dependencies {
     implementation("org.springframework:spring-jdbc:$jdbcVersion")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.kafka:spring-kafka")
 
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
