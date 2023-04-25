@@ -24,6 +24,8 @@ val springCloudVersion = "2021.0.3"
 val kafkaSchemaRegistryVersion = "7.0.1"
 val avroVersion = "1.11.0"
 val avroSerializerVersion = "5.2.1"
+val awaitilityVersion = "4.2.0"
+val kafkaTestContainerVersion = "1.17.6"
 
 repositories {
     mavenCentral()
@@ -58,7 +60,9 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:$testContainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
-    testImplementation("org.awaitility:awaitility:4.2.0")
+    testImplementation("org.awaitility:awaitility:$awaitilityVersion")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.testcontainers:kafka:$kafkaTestContainerVersion")
 
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")

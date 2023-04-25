@@ -27,7 +27,7 @@ public class ReservationKafkaProducer {
 
     public void sendReservation(ReservationDto reservationDto) {
         logger.info("Sending message: [{}]", reservationDto);
-        ListenableFuture<SendResult<String, ReservationDto>> result = this.kafkaTemplate.send(topic, reservationDto);
+        ListenableFuture<SendResult<String, ReservationDto>> result = kafkaTemplate.send(topic, reservationDto);
 
         result.addCallback(
                 successResult -> logger.info("Message sent successfully: [{}]", reservationDto),
