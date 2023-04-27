@@ -1,7 +1,7 @@
 package com.codeofus.rent_a_park.kafka;
 
 import com.codeofus.rent_a_park.IntegrationTest;
-import com.codeofus.rent_a_park.kafka.producer.ReservationKafkaProducer;
+import com.codeofus.rent_a_park.kafka.producer.ReservationProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,7 +22,7 @@ public class ReservationKafkaControllerTest extends IntegrationTest {
     MockMvc mockMvc;
 
     @MockBean
-    ReservationKafkaProducer producer;
+    ReservationProducer producer;
 
     @Test
     public void checkIfReservationSent() throws Exception {

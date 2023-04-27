@@ -11,6 +11,8 @@ public class ReservationDtoStub {
         return ReservationDto.newBuilder()
                 .setPersonId(1)
                 .setSpotId(1)
+                .setPersonEmail("mail@gmail.com")
+                .setSpotAddress("address")
                 .setCreatedAt(null)
                 .setReservedFrom(null)
                 .setReservedUntil(null);

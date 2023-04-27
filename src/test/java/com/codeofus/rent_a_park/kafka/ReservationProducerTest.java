@@ -1,7 +1,7 @@
 package com.codeofus.rent_a_park.kafka;
 
 import com.codeofus.rent_a_park.IntegrationTest;
-import com.codeofus.rent_a_park.kafka.producer.ReservationKafkaProducer;
+import com.codeofus.rent_a_park.kafka.producer.ReservationProducer;
 import com.codeofus.reservations.ReservationDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ReservationProducerTest extends IntegrationTest {
     String topic;
 
     @Autowired
-    ReservationKafkaProducer producer;
+    ReservationProducer producer;
 
     @MockBean
     KafkaTemplate<String, ReservationDto> kafkaTemplate;

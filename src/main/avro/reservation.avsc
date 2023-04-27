@@ -9,8 +9,16 @@
       "type": "int"
     },
     {
+      "name": "personEmail",
+      "type": "string"
+    },
+    {
       "name": "spotId",
       "type": "int"
+    },
+    {
+      "name": "spotAddress",
+      "type": "string"
     },
     {
       "name": "createdAt",

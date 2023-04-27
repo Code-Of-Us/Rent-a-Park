@@ -21,7 +21,6 @@ public class IntegrationTest {
     static String EUREKA_IMAGE = "springcloud/eureka";
     static int EUREKA_PORT = 8761;
     static String KAFKA_IMAGE = "confluentinc/cp-kafka:7.3.0";
-    static int KAFKA_PORT = 9092;
 
 
     static PostgreSQLContainer postgres = new PostgreSQLContainer(POSTGRES_IMAGE);
