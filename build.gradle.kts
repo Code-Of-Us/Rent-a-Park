@@ -1,8 +1,8 @@
 plugins {
     java
     jacoco
-
-    id("org.springframework.boot") version "2.7.6"
+    id("maven-publish")
+    id("org.springframework.boot") version "2.7.9"
     id("io.spring.dependency-management") version "1.1.0"
     id("com.github.davidmc24.gradle.plugin.avro") version "1.2.0"
 }
@@ -33,6 +33,24 @@ repositories {
     maven { url = uri("https://packages.confluent.io/maven/") }
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/code-of-us/rent-a-park")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("gpr") {
+            from(components["java"])
+        }
+    }
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -43,6 +61,11 @@ dependencies {
     implementation("org.springframework:spring-jdbc:$jdbcVersion")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
