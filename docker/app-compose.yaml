@@ -4,7 +4,7 @@ services:
   rent-a-park:
     image: 'ghcr.io/code-of-us/rent-a-park' # set the image you want to run
     build:
-      context: .
+      context: ..
     container_name: rent-a-park
     environment:
       - DATASOURCE_URL=jdbc:postgresql://postgres:5432/rentapark
