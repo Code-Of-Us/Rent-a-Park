@@ -26,7 +26,7 @@ services:
     container_name: config-server
     image: "springcloud/configserver"
     environment:
-      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: "https://github.com/ivona13/Rates"
+      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: "https://github.com/Code-Of-Us/Shared-Configuration"
       #SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: "your-github-username"
       #SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: "your-github-password"
     ports:
